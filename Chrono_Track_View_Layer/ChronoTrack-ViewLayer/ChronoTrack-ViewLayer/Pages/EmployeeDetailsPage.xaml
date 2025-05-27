@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+            x:Class="ChronoTrack_ViewLayer.Pages.EmployeeDetailsPage"
+            NavigationPage.HasNavigationBar="False"
+            BackgroundColor="#F1F2F6">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <components:HeaderComponent Grid.Row="0" />
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+            <!-- Left Side Navigation (Fixed) -->
+            <components:SidebarComponent Grid.Column="0" x:Name="SidebarComponent" />
+            <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" Padding="24">
+                <Label Text="Employee Details"
+                       FontFamily="Lexend"
+                       FontAttributes="Bold"
+                       TextColor="#3982D5"
+                       FontSize="20"
+                       Margin="0,0,0,20"/>
+            </Grid>
+            <!-- Content Area -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*" Padding="24" Margin="0,40,0,0">
+                <Label Text="Employee Details"
+                       FontFamily="Lexend"
+                       FontAttributes="Bold"
+                       TextColor="#3982D5"
+                       FontSize="20"
+                       Margin="0,0,0,40"
+                       IsVisible="False"/>
+
+                <!-- Data Table -->
+                <Border Grid.Row="1" 
+                        BackgroundColor="White" 
+                        StrokeShape="RoundRectangle 16" 
+                        Padding="20">
+                    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+                        <!-- Header with controls -->
+                        <Grid ColumnDefinitions="Auto,*" Grid.Row="0">
+                            <Label Text="Employee Details" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   Margin="0,25,0,0"
+                                   TextColor="#111827"
+                                   Grid.Column="0"/>
+
+                            <!-- Right side controls -->
+                            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="12" Margin="0,0,0,10">
+                                <!-- Search Bar -->
+                                <Border Padding="12,8" 
+                                       BackgroundColor="#F3F4F6" 
+                                       Margin="0,20,0,0"
+                                       Stroke="Transparent" 
+                                       StrokeShape="RoundRectangle 12" 
+                                       WidthRequest="400"
+                                       VerticalOptions="Center">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Image Source="searchicon.png" 
+                                              HeightRequest="20" 
+                                              WidthRequest="20" 
+                                              Opacity="0.7"/>
+                                        <Entry Placeholder="Quick Search..." 
+                                              x:Name="SearchEntry"
+                                              TextChanged="OnSearchTextChanged"
+                                              Grid.Column="1" 
+                                              TextColor="Black"
+                                              PlaceholderColor="#6B7280" 
+                                              BackgroundColor="Transparent"/>
+                                    </Grid>
+                                </Border>
+                                
+                                <!-- Add Employee Button -->
+                                <Button Text="Add Employee" 
+                                       BackgroundColor="#0066FF" 
+                                       TextColor="White" 
+                                       Margin="0,20,0,0"
+                                       Padding="16,0" 
+                                       HeightRequest="40"
+                                       CornerRadius="8"
+                                       FontAttributes="Bold"
+                                       FontSize="14"
+                                       VerticalOptions="Center"
+                                       Clicked="OnAddEmployeeClicked"/>
+                                
+                                <!-- Export Button -->
+                                <Button Text="Export Employees" 
+                                       BackgroundColor="#0066FF" 
+                                       TextColor="White" 
+                                       Margin="0,20,0,0"
+                                       Padding="16,0" 
+                                       HeightRequest="40"
+                                       CornerRadius="8"
+                                       FontAttributes="Bold"
+                                       FontSize="14"
+                                       VerticalOptions="Center"
+                                       Clicked="OnExportEmployeesClicked"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+
+                        <!-- Top Border Line -->
+                        <BoxView Grid.Row="1" 
+                                HeightRequest="1" 
+                                Color="#E5E7EB"/>
+
+                        <!-- Table Content -->
+                        <VerticalStackLayout Grid.Row="2" Spacing="0">
+                            <!-- Table Header -->
+                            <Grid ColumnDefinitions="Auto,10,1*,*,*,*,2*,Auto,Auto" 
+                                  BackgroundColor="#F9FAFB" 
+                                  Padding="10">
+                                <Grid.Resources>
+                                    <Style TargetType="Label">
+                                        <Setter Property="FontAttributes" Value="Bold"/>
+                                        <Setter Property="TextColor" Value="#374151"/>
+                                        <Setter Property="VerticalOptions" Value="Center"/>
+                                        <Setter Property="HorizontalOptions" Value="Start"/>
+                                        <Setter Property="Margin" Value="5,0,0,0"/>
+                                    </Style>
+                                    <Style TargetType="BoxView">
+                                        <Setter Property="WidthRequest" Value="1"/>
+                                        <Setter Property="Color" Value="#E5E7EB"/>
+                                        <Setter Property="Margin" Value="5,0"/>
+                                        <Setter Property="VerticalOptions" Value="Fill"/>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Label Text="Employee ID" FontSize="14"/>
+                                <BoxView Grid.Column="1" HorizontalOptions="Center"/>
+                                <Label Text="Full Name" Grid.Column="2" FontSize="14"/>
+                                <BoxView Grid.Column="2" HorizontalOptions="End"/>
+                                <Label Text="Role" Grid.Column="3" FontSize="14"/>
+                                <BoxView Grid.Column="3" HorizontalOptions="End"/>
+                                <Label Text="Department" Grid.Column="4" FontSize="14"/>
+                                <BoxView Grid.Column="4" HorizontalOptions="End"/>
+                                <Label Text="Gender" Grid.Column="5" FontSize="14"/>
+                                <BoxView Grid.Column="5" HorizontalOptions="End"/>
+                                <Label Text="Email Address" Grid.Column="6" FontSize="14"/>
+                                <BoxView Grid.Column="6" HorizontalOptions="End"/>
+                                <Label Text="Actions" Grid.Column="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Margin="0" FontSize="14"/>
+                            </Grid>
+
+                            <!-- Bottom Header Border Line -->
+                            <BoxView HeightRequest="1" Color="#E5E7EB"/>
+
+                            <!-- Table Content with RefreshView -->
+                            <RefreshView x:Name="EmployeeRefreshView" Refreshing="OnRefreshData">
+                                <CollectionView x:Name="EmployeesCollection" 
+                                              HeightRequest="600">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid ColumnDefinitions="88,10,260,260,265,260,2*,Auto,Auto" Padding="10">
+                                                    <Grid.Resources>
+                                                        <Style TargetType="Label">
+                                                            <Setter Property="TextColor" Value="#111827"/>
+                                                            <Setter Property="VerticalOptions" Value="Center"/>
+                                                            <Setter Property="HorizontalOptions" Value="Start"/>
+                                                            <Setter Property="Margin" Value="5,0,0,0"/>
+                                                            <Setter Property="FontSize" Value="14"/>
+                                                        </Style>
+                                                        <Style TargetType="BoxView">
+                                                            <Setter Property="WidthRequest" Value="1"/>
+                                                            <Setter Property="Color" Value="#E5E7EB"/>
+                                                            <Setter Property="Margin" Value="5,0"/>
+                                                            <Setter Property="VerticalOptions" Value="Fill"/>
+                                                        </Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Padding" Value="10,5"/>
+                                                            <Setter Property="FontSize" Value="14"/>
+                                                        </Style>
+                                                    </Grid.Resources>
+
+                                                    <!-- Employee ID -->
+                                                    <Label Text="{Binding UserId}" TextColor="#000000"/>
+                                                    <BoxView Grid.Column="1" HorizontalOptions="Center"/>
+                                                    
+                                                    <!-- Employee Name -->
+                                                    <Label Text="{Binding EmployeeName}" Grid.Column="2" TextColor="#000000"/>
+                                                    <BoxView Grid.Column="2" HorizontalOptions="End"/>
+                                                    
+                                                    <!-- Employee Role -->
+                                                    <Label Text="{Binding Role}" Grid.Column="3" TextColor="#000000"/>
+                                                    <BoxView Grid.Column="3" HorizontalOptions="End"/>
+                                                    
+                                                    <!-- Employee Department -->
+                                                    <Label Text="{Binding Department}" Grid.Column="4" TextColor="#000000"/>
+                                                    <BoxView Grid.Column="4" HorizontalOptions="End"/>
+                                                    
+                                                    <!-- Employee Gender -->
+                                                    <Label Text="{Binding Gender}" Grid.Column="5" TextColor="#000000"/>
+                                                    <BoxView Grid.Column="5" HorizontalOptions="End"/>
+                                                    
+                                                    <!-- Employee Email -->
+                                                    <Label Grid.Column="6" TextColor="#000000">
+                                                        <Label.Text>
+                                                            <Binding Path="EmailAddress" TargetNullValue="No email provided" FallbackValue="No email provided" />
+                                                        </Label.Text>
+                                                        <ToolTipProperties.Text>
+                                                            <Binding Path="EmailAddress" TargetNullValue="No email provided" FallbackValue="No email provided" />
+                                                        </ToolTipProperties.Text>
+                                                    </Label>
+                                                    <BoxView Grid.Column="6" HorizontalOptions="End"/>
+                                                    
+                                                    <!-- Action Buttons -->
+                                                    <Button Text="Edit" 
+                                                            Grid.Column="7"
+                                                            BackgroundColor="#A6FF9A"
+                                                            TextColor="#374151"
+                                                            Margin="0,0,5,0"
+                                                            Clicked="OnEditClicked"
+                                                            CommandParameter="{Binding .}"/>
+                                                    <Button Text="Delete" 
+                                                            Grid.Column="8"
+                                                            BackgroundColor="#FF9A9A"
+                                                            TextColor="#374151"
+                                                            Clicked="OnDeleteClicked"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Grid>
+                                                <!-- Row Border Line -->
+                                                <BoxView HeightRequest="1" 
+                                                         Color="#E5E7EB"
+                                                         VerticalOptions="End"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </RefreshView>
+                        </VerticalStackLayout>
+
+                        <!-- Pagination -->
+                        <Grid Grid.Row="3" RowDefinitions="Auto,Auto">
+                            <!-- Pagination Info -->
+                            <HorizontalStackLayout HorizontalOptions="Center">
+                                <Label Text="Showing" TextColor="#6B7280"/>
+                                <Label Text="{Binding StartItem}" TextColor="#111827" Margin="5,0"/>
+                                <Label Text="to" TextColor="#6B7280"/>
+                                <Label Text="{Binding EndItem}" TextColor="#111827" Margin="5,0"/>
+                                <Label Text="of" TextColor="#6B7280"/>
+                                <Label Text="{Binding TotalItems}" TextColor="#111827" Margin="5,0"/>
+                                <Label Text="entries" TextColor="#6B7280"/>
+                            </HorizontalStackLayout>
+
+                            <!-- Pagination Controls -->
+                            <HorizontalStackLayout Grid.Row="1"
+                                                 HorizontalOptions="Center" 
+                                                 Spacing="8"
+                                                 Margin="0,20,0,0">
+                                <Button Text="Previous" 
+                                        BackgroundColor="#F3F4F6" 
+                                        TextColor="#374151" 
+                                        Clicked="OnPreviousClicked"/>
+                                <Button Text="1" 
+                                        BackgroundColor="{Binding CurrentPage, Converter={StaticResource PageButtonColorConverter}, ConverterParameter=1}"
+                                        TextColor="{Binding CurrentPage, Converter={StaticResource PageButtonTextColorConverter}, ConverterParameter=1}"
+                                        Clicked="OnPageNumberClicked"/>
+                                <Button Text="2" 
+                                        BackgroundColor="{Binding CurrentPage, Converter={StaticResource PageButtonColorConverter}, ConverterParameter=2}"
+                                        TextColor="{Binding CurrentPage, Converter={StaticResource PageButtonTextColorConverter}, ConverterParameter=2}"
+                                        Clicked="OnPageNumberClicked"/>
+                                <Button Text="3" 
+                                        BackgroundColor="{Binding CurrentPage, Converter={StaticResource PageButtonColorConverter}, ConverterParameter=3}"
+                                        TextColor="{Binding CurrentPage, Converter={StaticResource PageButtonTextColorConverter}, ConverterParameter=3}"
+                                        Clicked="OnPageNumberClicked"/>
+                                <Button Text="..." 
+                                        BackgroundColor="Transparent" 
+                                        TextColor="#374151"/>
+                                <Button Text="8" 
+                                        BackgroundColor="{Binding CurrentPage, Converter={StaticResource PageButtonColorConverter}, ConverterParameter=8}"
+                                        TextColor="{Binding CurrentPage, Converter={StaticResource PageButtonTextColorConverter}, ConverterParameter=8}"
+                                        Clicked="OnPageNumberClicked"/>
+                                <Button Text="Next" 
+                                        BackgroundColor="#F3F4F6" 
+                                        TextColor="#374151" 
+                                        Clicked="OnNextClicked"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Grid>
+                </Border>
+                
+                <!-- Add/Edit Employee Form Overlay (Hidden by default) -->
+                <Grid x:Name="AddEmployeeFormOverlay" 
+                      IsVisible="False"
+                      Grid.Row="1"
+                      BackgroundColor="#80000000"
+                      InputTransparent="False">
+                    <!-- Container for size constraints -->
+                    <Grid WidthRequest="1200" 
+                          HeightRequest="800"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center">
+                        <Border BackgroundColor="White" 
+                                StrokeShape="RoundRectangle 16" 
+                                WidthRequest="960"
+                                HeightRequest="640"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            <Grid RowDefinitions="Auto,*,Auto" Padding="20" RowSpacing="16">
+                                <!-- Form Title -->
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Add New Employee" 
+                                           x:Name="FormTitleLabel"
+                                           FontSize="18" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827"/>
+                                    <Button Text="✕" 
+                                            Grid.Column="1"
+                                            BackgroundColor="Transparent"
+                                            TextColor="#374151"
+                                            FontSize="18"
+                                            Clicked="OnCloseFormClicked"
+                                            WidthRequest="40"
+                                            HeightRequest="40"
+                                            Padding="0"
+                                            HorizontalOptions="End"/>
+                                </Grid>
+
+                                <!-- Form Fields -->
+                                <ScrollView Grid.Row="1">
+                                    <Grid ColumnDefinitions="Auto,*" 
+                                          ColumnSpacing="20">
+                                        <!-- User Profile Section -->
+                                        <VerticalStackLayout Grid.Column="0" 
+                                                            Spacing="20" 
+                                                            WidthRequest="180" 
+                                                            HorizontalOptions="Start"
+                                                            IsVisible="True">
+                                            <!-- Profile Image -->
+                                            <Border StrokeShape="RoundRectangle 100" 
+                                                   HeightRequest="100" 
+                                                   WidthRequest="100" 
+                                                   Padding="0"
+                                                   StrokeThickness="0"
+                                                   HorizontalOptions="Center"
+                                                   BackgroundColor="#F9E4DD">
+                                                <Grid>
+                                                    <Image Source="dotnet_bot.png" 
+                                                           Aspect="AspectFill"/>
+                                                    <Border BackgroundColor="#F9E4DD" 
+                                                           VerticalOptions="End" 
+                                                           HeightRequest="50" 
+                                                           Opacity="0.8"
+                                                           Padding="0"
+                                                           StrokeThickness="0"/>
+                                                </Grid>
+                                            </Border>
+                                            
+                                            <!-- User Info -->
+                                            <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                                                <Label Text="user" 
+                                                       FontSize="18" 
+                                                       FontAttributes="Bold" 
+                                                       HorizontalOptions="Center"/>
+                                                <Label Text="user@ateamsoftware.com" 
+                                                       FontSize="14" 
+                                                       TextColor="#6B7280"
+                                                       LineBreakMode="WordWrap"
+                                                       MaxLines="2"
+                                                       HorizontalOptions="Center"/>
+                                            </VerticalStackLayout>
+                                        </VerticalStackLayout>
+                                        
+                                        <!-- Form Fields -->
+                                        <Grid Grid.Column="1"
+                                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+                                              ColumnDefinitions="*,*" 
+                                              RowSpacing="15" 
+                                              ColumnSpacing="15">
+                                            
+                                            <!-- Employee ID -->
+                                            <VerticalStackLayout Grid.Row="0" 
+                                                                Grid.Column="0" 
+                                                                Spacing="4">
+                                                <Label Text="Employee ID" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       Margin="0,5,0,0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="2341421" 
+                                                           x:Name="EmployeeIdEntry"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Empty space for alignment -->
+                                            <BoxView Grid.Row="0" 
+                                                    Grid.Column="1" 
+                                                    IsVisible="True" />
+                                            
+                                            <!-- First Name -->
+                                            <VerticalStackLayout Grid.Row="1" 
+                                                                Grid.Column="0" 
+                                                                Spacing="4">
+                                                <Label Text="First Name" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       Margin="0,5,0,0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="Employee First Name" 
+                                                           x:Name="FirstNameEntry"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Last Name -->
+                                            <VerticalStackLayout Grid.Row="1" 
+                                                                Grid.Column="1" 
+                                                                Spacing="4">
+                                                <Label Text="Last Name" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Margin="0,5,0,0"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="Employee Last Name" 
+                                                           x:Name="LastNameEntry"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Gender -->
+                                            <VerticalStackLayout Grid.Row="2" 
+                                                                Grid.Column="0" 
+                                                                Spacing="4">
+                                                <Label Text="Gender" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="Black"/>
+                                                <Border Padding="10,0" 
+                                                       HeightRequest="45" 
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Margin="0,5,0,0"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Picker x:Name="GenderPicker"
+                                                            Title="Male / Female"
+                                                            FontSize="14"
+                                                            TextColor="Black"
+                                                            Margin="0,-20,0,0">
+                                                        <Picker.Items>
+                                                            <x:String>Male</x:String>
+                                                            <x:String>Female</x:String>
+                                                            <x:String>Other</x:String>
+                                                        </Picker.Items>
+                                                    </Picker>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Department -->
+                                            <VerticalStackLayout Grid.Row="2" 
+                                                                Grid.Column="1" 
+                                                                Spacing="4">
+                                                <Label Text="Department" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="10,0" 
+                                                       HeightRequest="45" 
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Margin="0,5,0,0"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Picker x:Name="DepartmentPicker"
+                                                            SelectedIndexChanged="OnDepartmentSelectedChanged"
+                                                            HorizontalOptions="Fill"
+                                                            Background="Transparent"
+                                                            TextColor="Black"
+                                                            Margin="0,-20,0,0">
+                                                        <Picker.Items>
+                                                            <x:String>IT</x:String>
+                                                            <x:String>HR</x:String>
+                                                            <x:String>Marketing</x:String>
+                                                            <x:String>Business</x:String>
+                                                            <x:String>Design</x:String>
+                                                            <x:String>Sales</x:String>
+                                                            <x:String>Management</x:String>
+                                                        </Picker.Items>
+                                                    </Picker>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Role -->
+                                            <VerticalStackLayout Grid.Row="3" 
+                                                                Grid.Column="0" 
+                                                                Spacing="4">
+                                                <Label Text="Role" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="10,0" 
+                                                       HeightRequest="45" 
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Margin="0,5,0,0"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Picker x:Name="RolePicker"
+                                                            Title="Select the Employee Role"  
+                                                            FontSize="14"
+                                                            TextColor="Black"
+                                                            Margin="0,-20,0,0">
+                                                        <!-- Roles will be populated dynamically based on department selection -->
+                                                    </Picker>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Address -->
+                                            <VerticalStackLayout Grid.Row="3" 
+                                                                Grid.Column="1" 
+                                                                Spacing="4">
+                                                <Label Text="Address" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       Margin="0,5,0,0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="Enter the employee address" 
+                                                           x:Name="AddressEntry"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Email Address -->
+                                            <VerticalStackLayout Grid.Row="4" 
+                                                                Grid.Column="0" 
+                                                                Spacing="4">
+                                                <Label Text="Email Address" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       Margin="0,5,0,0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="employee@example.com" 
+                                                           x:Name="EmailEntry"
+                                                           Keyboard="Email"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                            
+                                            <!-- Phone Number -->
+                                            <VerticalStackLayout Grid.Row="4" 
+                                                                Grid.Column="1" 
+                                                                Spacing="4">
+                                                <Label Text="Phone Number" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="#374151"/>
+                                                <Border Padding="12,0" 
+                                                       HeightRequest="45" 
+                                                       Margin="0,5,0,0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Stroke="#E5E7EB"
+                                                       BackgroundColor="#F9FAFB">
+                                                    <Entry Placeholder="+947** **** ****" 
+                                                           x:Name="PhoneEntry"
+                                                           Keyboard="Telephone"
+                                                           PlaceholderColor="#9CA3AF"
+                                                           FontSize="14"
+                                                           TextColor="Black"
+                                                           BackgroundColor="Transparent"/>
+                                                </Border>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Grid>
+                                </ScrollView>
+
+                                <!-- Action Buttons -->
+                                <HorizontalStackLayout Grid.Row="2" 
+                                                     HorizontalOptions="End" 
+                                                     Spacing="16">
+                                    <Button Text="Save" 
+                                            BackgroundColor="#0066FF" 
+                                            TextColor="White" 
+                                            WidthRequest="120"
+                                            HeightRequest="45"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            x:Name="SaveButton"
+                                            Clicked="OnSaveEmployeeClicked"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+
+    <!-- Add VisualStateManager for responsive layout -->
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowSizeStates">
+            <!-- Desktop/Default state - keep existing layout -->
+            <VisualState x:Name="Normal">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="900" />
+                </VisualState.StateTriggers>
+            </VisualState>
+            
+            <!-- Tablet state -->
+            <VisualState x:Name="Tablet">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="600" />
+                </VisualState.StateTriggers>
+            </VisualState>
+            
+            <!-- Mobile state - hide sidebar -->
+            <VisualState x:Name="Mobile">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <!-- Hide sidebar in mobile view -->
+                    <Setter Property="IsVisible" TargetName="SidebarComponent" Value="False" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+</ContentPage> 

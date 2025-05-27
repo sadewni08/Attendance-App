@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+            xmlns:local="clr-namespace:ChronoTrack_ViewLayer"
+            xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+            x:Class="ChronoTrack_ViewLayer.Templates.PageTemplate"  
+            NavigationPage.HasNavigationBar="False"  
+            BackgroundColor="Black">
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <components:HeaderComponent Grid.Row="0" />
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+            <!-- Left Side Navigation (Fixed) -->
+            <components:SidebarComponent Grid.Column="0" />
+
+            <!-- Main Page Content -->  
+            <Grid Grid.Column="1" RowDefinitions="Auto,*" Padding="24">
+                <Label Text="Page Title"
+                       TextColor="White"
+                       FontSize="20"
+                       Margin="0,0,0,20"/>
+                       
+                <!-- Page Content Goes Here -->  
+                <Border Grid.Row="1"  
+                       BackgroundColor="White"  
+                       Padding="24"  
+                       StrokeShape="RoundRectangle 16">  
+                    <Label Text="Page Content Goes Here"
+                           TextColor="Black"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>  
+            </Grid>  
+        </Grid>
+    </Grid>  
+</ContentPage> 

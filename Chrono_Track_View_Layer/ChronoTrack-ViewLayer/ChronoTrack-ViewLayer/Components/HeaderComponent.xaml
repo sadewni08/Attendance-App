@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+             x:Class="ChronoTrack_ViewLayer.Components.HeaderComponent"
+             HeightRequest="80">
+    <AbsoluteLayout>
+        <!-- Fixed Header Container -->
+        <Grid 
+            AbsoluteLayout.LayoutBounds="0,0,1,80" 
+            AbsoluteLayout.LayoutFlags="WidthProportional"
+            RowDefinitions="80">
+            
+            <!-- Desktop Header -->
+            <Border x:Name="DesktopHeader"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    BackgroundColor="White"
+                    ZIndex="1">
+                <Grid ColumnDefinitions="Auto,*,Auto" 
+                      Padding="38,0"
+                      ColumnSpacing="8"
+                      VerticalOptions="Center">
+
+                    <Label Text="ChronoTrack"
+                           Grid.Column="0"
+                           FontFamily="Lexend"
+                           TextColor="#3982D5"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                    <!-- Search Bar -->
+                    <Border Grid.Column="1"
+                           Padding="12,8"
+                           BackgroundColor="#F9FAFB"
+                           Stroke="Transparent"
+                           StrokeShape="RoundRectangle 20">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="searchicon.png"
+                                   HeightRequest="20"
+                                   WidthRequest="20"
+                                   Opacity="0.5"
+                                   SemanticProperties.Description="Search icon"/>
+                            <Entry Placeholder="Quick Search..."
+                                   Grid.Column="1"
+                                   PlaceholderColor="#9CA3AF"
+                                   BackgroundColor="Transparent"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- User Profile -->
+                    <HorizontalStackLayout Grid.Column="2" 
+                                          Spacing="16"
+                                          VerticalOptions="Center">
+                        <Border x:Name="CalendarBorder"
+                                BackgroundColor="#CFD7FD"  
+                                Padding="8"  
+                                StrokeShape="RoundRectangle 20"  
+                                Stroke="#CFD7FD"
+                                HeightRequest="50"
+                                WidthRequest="50">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCalendarBorderTapped"/>
+                            </Border.GestureRecognizers>
+                            <Image Source="calendar.png"
+                                   HeightRequest="28"
+                                   WidthRequest="28"
+                                   SemanticProperties.Description="Calendar icon">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCalendarBorderTapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Border>
+
+                        <Border x:Name="NotificationBorder"
+                                BackgroundColor="#CFD7FD"  
+                                Padding="8"  
+                                StrokeShape="RoundRectangle 20"  
+                                Stroke="#CFD7FD"
+                                HeightRequest="50"
+                                WidthRequest="50">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnNotificationBorderTapped"/>
+                            </Border.GestureRecognizers>
+                            <Image Source="bellicon.png"
+                                   HeightRequest="28"
+                                   WidthRequest="28"
+                                   SemanticProperties.Description="Notification icon">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnNotificationBorderTapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Border>
+                        
+                        <Grid>
+                            <HorizontalStackLayout Spacing="8">
+                                <Border x:Name="ProfileBorder"
+                                       StrokeShape="RoundRectangle 20"
+                                       HeightRequest="40"
+                                       WidthRequest="40"
+                                       Padding="0"
+                                       BackgroundColor="Black">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                                    </Border.GestureRecognizers>
+                                    <Image Source="admin_profile.png"
+                                           Aspect="AspectFill"
+                                           SemanticProperties.Description="Admin profile">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Border>
+                                <VerticalStackLayout x:Name="ProfileInfo">
+                                    <Label x:Name="UserNameLabel"
+                                           Text="Admin"
+                                           TextColor="Black"
+                                           FontAttributes="Bold"/>
+                                    <Label x:Name="UserEmailLabel"
+                                           Text="Admin@teamsoftware.com"
+                                           FontSize="12"
+                                           TextColor="Black"/>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Mobile Header -->
+            <components:MobileHeaderComponent x:Name="MobileHeader" ZIndex="1"/>
+        </Grid>
+        
+        <!-- Profile Menu Popup - Positioned directly -->
+        <Border x:Name="ProfileMenuPopup"
+                IsVisible="False"
+                StrokeShape="RoundRectangle 8"
+                Stroke="#E5E7EB"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                AbsoluteLayout.LayoutBounds="1,80,180,-1"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                MinimumWidthRequest="180"
+                Padding="0"
+                ZIndex="2000">
+            <VerticalStackLayout Spacing="0">
+                <Button Text="Logout"
+                        x:Name="LogoutButton"
+                        Clicked="OnLogoutClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="#DF4646"
+                        FontAttributes="Bold"
+                        Padding="16,12"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Center"
+                        BorderWidth="0"
+                        BorderColor="Transparent"
+                        ImageSource="logout.png"/>
+            </VerticalStackLayout>
+        </Border>
+        
+        <!-- Popup overlay - for closing popups by clicking outside them -->
+        <Grid x:Name="PopupOverlay"
+              IsVisible="False"
+              InputTransparent="False"
+              BackgroundColor="#80000000"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"
+              ZIndex="99998">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPopupOverlayTapped"/>
+            </Grid.GestureRecognizers>
+        </Grid>
+        
+        <!-- Calendar Popup -->
+        <components:CalendarPopupComponent x:Name="CalendarPopupComponent"
+                                          IsVisible="False"
+                                          AbsoluteLayout.LayoutBounds="1,80,420,480"
+                                          AbsoluteLayout.LayoutFlags="PositionProportional"
+                                          Margin="0,0,120,0"
+                                          ZIndex="-1" />
+        
+        <!-- Notifications Popup -->
+        <components:NotificationsPopupComponent x:Name="NotificationsPopupComponent"
+                                               IsVisible="False"
+                                               AbsoluteLayout.LayoutBounds="1,80,380,480"
+                                               AbsoluteLayout.LayoutFlags="PositionProportional"
+                                               Margin="0,0,32,0"
+                                               ZIndex="-1" />
+    </AbsoluteLayout>
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowSizeStates">
+            <VisualState x:Name="Desktop">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="1024"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="DesktopHeader" Property="IsVisible" Value="True"/>
+                    <Setter TargetName="MobileHeader" Property="IsVisible" Value="False"/>
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="Tablet">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="640"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="DesktopHeader" Property="IsVisible" Value="True"/>
+                    <Setter TargetName="MobileHeader" Property="IsVisible" Value="False"/>
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="Mobile">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="DesktopHeader" Property="IsVisible" Value="False"/>
+                    <Setter TargetName="MobileHeader" Property="IsVisible" Value="True"/>
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+</ContentView> 

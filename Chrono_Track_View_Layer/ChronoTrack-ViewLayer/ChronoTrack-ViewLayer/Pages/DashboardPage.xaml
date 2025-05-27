@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+            xmlns:local="clr-namespace:ChronoTrack_ViewLayer"
+            xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+            xmlns:converters="clr-namespace:ChronoTrack_ViewLayer.Converters"
+            x:Class="ChronoTrack_ViewLayer.Pages.DashboardPage"  
+            NavigationPage.HasNavigationBar="False"  
+            BackgroundColor="#F4F5F7">
+
+    <ContentPage.Resources>
+        <Style x:Key="ResponsiveButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#3354F4" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Shadow">
+                <Shadow Brush="Black"
+                        Opacity="0.2"
+                        Offset="0,2"
+                        Radius="5"/>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DashboardCardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+            <Setter Property="Shadow">
+                <Shadow Brush="Black"
+                        Opacity="0.1"
+                        Offset="0,2"
+                        Radius="8"/>
+            </Setter>
+        </Style>
+        
+        <!-- Converters -->
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+  
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="#F4F5F7">
+        <!-- Header -->
+        <components:HeaderComponent Grid.Row="0" ZIndex="99999"/>
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1">
+            <Grid x:Name="MainGrid" ColumnDefinitions="Auto,*" Padding="0,10,10,10">
+                <!-- Left Side Navigation (Fixed) -->
+                <components:SidebarComponent Grid.Column="0" x:Name="SidebarComponent" />
+
+                <!-- Main Dashboard Content -->
+                <Grid Grid.Column="1" RowDefinitions="Auto,*" Padding="20,0,20,20" >
+                    <Label Text="Dashboard - Admin"
+                           FontFamily="Lexend"
+                           FontAttributes="Bold"
+                           TextColor="#2C3E50"
+                           FontSize="24"
+                           Margin="0,0,0,20"/>
+
+                    <!-- Time and Date Section -->
+                    <Grid x:Name="DashboardGrid" Grid.Row="1" 
+                          RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="5*,3*,4*"  
+                          ColumnSpacing="20"
+                          RowSpacing="20">
+
+                        <!-- Time Display -->
+                        <Border x:Name="TimeDisplayBorder" 
+                                Grid.Column="0"  
+                                Style="{StaticResource DashboardCardStyle}"
+                                Padding="25"  
+                                HeightRequest="500">
+                            <Grid RowDefinitions="Auto,*,Auto">
+                                <VerticalStackLayout Grid.Row="0" Spacing="15">
+                                    <Label x:Name="Today"  
+                                           Text="Today"  
+                                           FontSize="40"  
+                                           FontAttributes="Bold"  
+                                           TextColor="#4A4A4A"/>
+                                    <Label x:Name="DateLabel"  
+                                           Text="03rd March 2025"  
+                                           FontSize="Large"  
+                                           FontFamily="Lexend"
+                                           TextColor="#6A6A6A"/>
+                                    <Label x:Name="TimeLabel"  
+                                           Text="8:02:09 AM"  
+                                           FontSize="70"  
+                                           TextColor="#3354F4"
+                                           FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                <Button Grid.Row="2"
+                                        Text="View Summary"
+                                        Style="{StaticResource ResponsiveButtonStyle}"
+                                        Padding="20"
+                                        HeightRequest="60"
+                                        Margin="0,20,0,0"
+                                        VerticalOptions="End"
+                                        HorizontalOptions="Fill"
+                                        x:Name="ViewSummaryButton"
+                                        Clicked="OnViewSummaryClicked" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Employee Count -->
+                        <Border x:Name="EmployeeCountBorder" 
+                                Grid.Column="1"  
+                                Style="{StaticResource DashboardCardStyle}"
+                                Padding="25">
+                            <Grid RowDefinitions="Auto,*,Auto">
+                                <VerticalStackLayout Grid.Row="0" Spacing="15">
+                                    <Label Text="Total Employees"  
+                                           TextColor="#2C3E50"  
+                                           FontSize="Large"
+                                           HorizontalTextAlignment="Center"
+                                           FontFamily="Lexend"
+                                           FontAttributes="Bold"/>
+                                        <Border Grid.Column="0" 
+                                            Style="{StaticResource DashboardCardStyle}"
+                                            Padding="15"
+                                            Margin="0,50,0,0"
+                                            BackgroundColor="#E6F2FF">
+                                            <VerticalStackLayout Spacing="10">
+                                                 <Label Text="105"  
+                                                   TextColor="#3354F4"  
+                                                   FontSize="120" 
+                                                   HorizontalTextAlignment="Center"
+                                                   FontAttributes="Bold"
+                                                   x:Name="TotalEmployeeCountLabel"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                                <Button Grid.Row="2"
+                                        Text="Add Employees"
+                                        Style="{StaticResource ResponsiveButtonStyle}"
+                                        HeightRequest="60"
+                                        Margin="0,20,0,0"
+                                        VerticalOptions="End"
+                                        HorizontalOptions="Fill"
+                                        x:Name="AddEmployeesButton"
+                                        Clicked="OnAddEmployeesClicked" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Arrivals Section -->
+                        <Border x:Name="ArrivalsBorder" 
+                                Grid.Column="2"
+                                Grid.RowSpan="2"
+                                Style="{StaticResource DashboardCardStyle}"
+                                Padding="25"
+                                HeightRequest="810">
+                            <ScrollView>
+                                <VerticalStackLayout Spacing="30">
+                                    <Label Text="Attendance Overview"   
+                                           TextColor="#2C3E50"  
+                                           FontSize="Large"  
+                                           FontFamily="Lexend"
+                                           HorizontalOptions="Center"
+                                           FontAttributes="Bold"/>
+
+                                    <!-- Attendance Stats Rows -->
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                                        <!-- Total -->
+                                        <Border Grid.Column="0" 
+                                                Style="{StaticResource DashboardCardStyle}"
+                                                Padding="15"
+                                                BackgroundColor="#E6F2FF">
+                                            <VerticalStackLayout Spacing="10">
+                                                <Label Text="Total"  
+                                                       TextColor="#3354F4"  
+                                                       FontSize="Medium" 
+                                                       HorizontalTextAlignment="Center"/>
+                                                <Label Text="105"  
+                                                       TextColor="#3354F4"  
+                                                       FontSize="40" 
+                                                       HorizontalTextAlignment="Center"
+                                                       FontAttributes="Bold"
+                                                       x:Name="TotalAttendanceCountLabel"/>
+                                            </VerticalStackLayout>
+                                        </Border>
+
+                                        <!-- On Time -->
+                                        <Border Grid.Column="1" 
+                                                Style="{StaticResource DashboardCardStyle}"
+                                                Padding="15"
+                                                BackgroundColor="#E6FFE6">
+                                            <VerticalStackLayout Spacing="10">
+                                                <Label Text="On Time"  
+                                                       TextColor="Green"  
+                                                       FontSize="Medium"
+                                                       HorizontalTextAlignment="Center"/>
+                                                <Label Text="80"  
+                                                       TextColor="Green"  
+                                                       FontSize="40"
+                                                       HorizontalTextAlignment="Center"
+                                                       FontAttributes="Bold"
+                                                       x:Name="OnTimeLabel"/>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Late and Early Departure Rows -->
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="20" Margin="0,40,0,0">
+                                        <!-- Late Arrivals -->
+                                        <Border Grid.Column="0" 
+                                                Style="{StaticResource DashboardCardStyle}"
+                                                Padding="15"
+                                                BackgroundColor="#FFE6E6">
+                                            <VerticalStackLayout Spacing="10">
+                                                <Label Text="Late Arrivals"  
+                                                       TextColor="Red"  
+                                                       FontSize="Medium" 
+                                                       HorizontalTextAlignment="Center"/>
+                                                <Label Text="13"  
+                                                       TextColor="Red"  
+                                                       FontSize="40"
+                                                       HorizontalTextAlignment="Center"
+                                                       FontAttributes="Bold"
+                                                       x:Name="LateArrivalsLabel"/>
+                                            </VerticalStackLayout>
+                                        </Border>
+
+                                        <!-- Early Departure -->
+                                        <Border Grid.Column="1" 
+                                                Style="{StaticResource DashboardCardStyle}"
+                                                Padding="15"
+                                                BackgroundColor="#F0F0F0">
+                                            <VerticalStackLayout Spacing="10">
+                                                <Label Text="Early Departure"  
+                                                       TextColor="#2C3E50"  
+                                                       FontSize="Medium" 
+                                                       HorizontalTextAlignment="Center"/>
+                                                <Label Text="12" 
+                                                       TextColor="#2C3E50"  
+                                                       FontSize="40"
+                                                       HorizontalTextAlignment="Center"
+                                                       FontAttributes="Bold"
+                                                       x:Name="EarlyDepartureLabel"/>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Absent Section -->
+                                    <Label Text="Absent Overview"   
+                                           TextColor="#2C3E50"  
+                                           FontSize="Large" 
+                                           Margin="0,20"
+                                           FontFamily="Lexend"
+                                           HorizontalOptions="Center"
+                                           FontAttributes="Bold"/> 
+                                    <Border Style="{StaticResource DashboardCardStyle}"
+                                            Padding="15"
+                                            BackgroundColor="#FFE6E6"
+                                            HorizontalOptions="Center"
+                                            Margin="0,0,0,0"
+                                            WidthRequest="520">
+                                        <VerticalStackLayout Spacing="10">
+                                            <Label Text="Absent"  
+                                                   TextColor="Red"  
+                                                   FontSize="Medium" 
+                                                   HorizontalTextAlignment="Center"/>
+                                            <Label Text="15"  
+                                                   TextColor="Red"  
+                                                   FontSize="40"
+                                                   HorizontalTextAlignment="Center"
+                                                   FontAttributes="Bold"
+                                                   x:Name="AbsentLabel"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </ScrollView>
+                        </Border>
+
+                        <!-- Bulk Sign In/Out Section -->
+                        <Border x:Name="BulkSignInOutBorder" 
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Style="{StaticResource DashboardCardStyle}"
+                                Padding="25">
+                            <VerticalStackLayout Spacing="30">
+                                <Label Text="Bulk Sign In / Sign Out"  
+                                       FontSize="Large"  
+                                       TextColor="Black"  
+                                       FontFamily="Lexend"
+                                       HorizontalOptions="Center"
+                                       FontAttributes="Bold"/>
+                                <Border Padding="20"  
+                                        Stroke="#878787"  
+                                        StrokeThickness="2"
+                                        BackgroundColor="#F9FAFB"
+                                        StrokeShape="RoundRectangle 10"
+                                        x:Name="EmployeeSelectionBorder"
+                                        Shadow="{Shadow Brush='Black', Offset='0,1', Opacity='0.2', Radius='4'}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference EmployeeSelectionBorder}, Path=BindingContext.OnEmployeeSelectionBorderTappedCommand}"/>
+                                    </Border.GestureRecognizers>
+                                    <Grid RowDefinitions="Auto,Auto">
+                                        <HorizontalStackLayout Grid.Row="0" 
+                                                                  HorizontalOptions="Center"
+                                                                  Spacing="5"
+                                                                  IsVisible="{Binding IsEmployeeListVisible, Converter={StaticResource InvertedBoolConverter}}">
+                                            <Label Text="Click here to select employees"  
+                                                   TextColor="Black"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   VerticalOptions="Center"/>
+                                            <Label Text="👆" 
+                                                   FontSize="22"
+                                                   VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                        
+                                        <!-- Employee selection list - hidden by default -->
+                                        <VerticalStackLayout Grid.Row="1" 
+                                                             IsVisible="{Binding IsEmployeeListVisible}"
+                                                             Spacing="10">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" 
+                                                  Padding="5,8,5,8" 
+                                                  ColumnSpacing="10">
+                                                <CheckBox Grid.Column="0" 
+                                                          IsChecked="{Binding IsAllSelected}" 
+                                                          CheckedChanged="OnSelectAllCheckBoxChanged"/>
+                                                <Label Grid.Column="1" 
+                                                       Text="Employee Name" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="Black"/>
+                                                <Label Grid.Column="2" 
+                                                       Text="Status" 
+                                                       FontAttributes="Bold" 
+                                                       Margin="0,0,10,0"
+                                                       FontSize="14"
+                                                       TextColor="Black"/>
+                                                <Label Grid.Column="3" 
+                                                       Text="Actions" 
+                                                       FontAttributes="Bold" 
+                                                       FontSize="14"
+                                                       TextColor="Black"/>
+                                            </Grid>
+                                            
+                                            <CollectionView x:Name="EmployeesCollectionView"
+                                                            ItemsSource="{Binding Employees}"
+                                                            HeightRequest="250"
+                                                            EmptyView="No employees found.">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" 
+                                                              Padding="5,8,5,8"
+                                                              ColumnSpacing="10">
+                                                            <CheckBox Grid.Column="0" 
+                                                                      IsChecked="{Binding IsSelected}" 
+                                                                      IsEnabled="{Binding IsCheckedIn, Converter={StaticResource InvertedBoolConverter}}"
+                                                                      CheckedChanged="OnEmployeeCheckBoxChanged"/>
+                                                            <Label Grid.Column="1" 
+                                                                   Text="{Binding FullName}" 
+                                                                   TextColor="Black" 
+                                                                   FontSize="14"
+                                                                   VerticalOptions="Center"/>
+                                                            <Label Grid.Column="2" 
+                                                                   Text="{Binding Status}" 
+                                                                   TextColor="Black"
+                                                                   FontAttributes="Bold"
+                                                                   Margin="0,0,10,0"
+                                                                   VerticalOptions="Center"/>
+                                                            <Button Grid.Column="3" 
+                                                                    Text="Check Out" 
+                                                                    IsVisible="{Binding IsCheckoutEnabled}"
+                                                                    HeightRequest="36"
+                                                                    WidthRequest="90"
+                                                                    FontSize="12"
+                                                                    FontAttributes="Bold"
+                                                                    BackgroundColor="#EF4444"
+                                                                    TextColor="White"
+                                                                    CornerRadius="5"
+                                                                    Margin="3,0,0,0"
+                                                                    Shadow="{Shadow Brush='Black', Offset='0,1', Opacity='0.2', Radius='2'}"
+                                                                    CommandParameter="{Binding UserId}"
+                                                                    Clicked="OnIndividualCheckOutClicked"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                                    <Button Grid.Column="0"  
+                                            Text="Sign In"  
+                                            Style="{StaticResource ResponsiveButtonStyle}"
+                                            BackgroundColor="#34D399" 
+                                            TextColor="White"
+                                            FontSize="16"
+                                            HeightRequest="60"
+                                            Clicked="OnBulkSignInClicked"
+                                            IsEnabled="{Binding HasSelectedEmployees}"/>
+                                    <Button Grid.Column="1"  
+                                            Text="Sign Out"  
+                                            Style="{StaticResource ResponsiveButtonStyle}"
+                                            BackgroundColor="#EF4444" 
+                                            TextColor="White"
+                                            FontSize="16"
+                                            HeightRequest="60"
+                                            Clicked="OnBulkSignOutClicked"
+                                            IsEnabled="{Binding HasCheckedInEmployees}"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </Grid>
+
+    <!-- Updated VisualStateManager with responsive states -->
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowSizeStates">
+            <!-- Desktop/Default state - keep existing layout -->
+            <VisualState x:Name="Normal">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="900" />
+                </VisualState.StateTriggers>
+            </VisualState>
+            
+            <!-- Tablet state - modified layout -->
+            <VisualState x:Name="Tablet">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="600" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <!-- Adjust dashboard grid to fewer columns -->
+                    <Setter Property="Grid.ColumnDefinitions" TargetName="DashboardGrid" Value="*,*" />
+                    <Setter Property="Grid.RowDefinitions" TargetName="DashboardGrid" Value="Auto,Auto,Auto" />
+                    
+                    <!-- Rearrange components -->
+                    <Setter Property="Grid.Column" TargetName="TimeDisplayBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="TimeDisplayBorder" Value="0" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="TimeDisplayBorder" Value="1" />
+                    <Setter Property="HeightRequest" TargetName="TimeDisplayBorder" Value="450" />
+                    
+                    <Setter Property="Grid.Column" TargetName="EmployeeCountBorder" Value="1" />
+                    <Setter Property="Grid.Row" TargetName="EmployeeCountBorder" Value="0" />
+                    
+                    <Setter Property="Grid.Column" TargetName="ArrivalsBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="ArrivalsBorder" Value="2" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="ArrivalsBorder" Value="2" />
+                    <Setter Property="Grid.RowSpan" TargetName="ArrivalsBorder" Value="1" />
+                    
+                    <Setter Property="Grid.Column" TargetName="BulkSignInOutBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="BulkSignInOutBorder" Value="1" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="BulkSignInOutBorder" Value="2" />
+                </VisualState.Setters>
+            </VisualState>
+            
+            <!-- Mobile state - vertical stack -->
+            <VisualState x:Name="Mobile">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <!-- Adjust main grid to stack components -->
+                    <Setter Property="IsVisible" TargetName="SidebarComponent" Value="False" />
+                    
+                    <!-- Make dashboard components stack vertically -->
+                    <Setter Property="Grid.ColumnDefinitions" TargetName="DashboardGrid" Value="*" />
+                    <Setter Property="Grid.RowDefinitions" TargetName="DashboardGrid" Value="Auto,Auto,Auto,Auto" />
+                    
+                    <!-- Rearrange all components one after another -->
+                    <Setter Property="Grid.Column" TargetName="TimeDisplayBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="TimeDisplayBorder" Value="0" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="TimeDisplayBorder" Value="1" />
+                    <Setter Property="HeightRequest" TargetName="TimeDisplayBorder" Value="400" />
+                    
+                    <Setter Property="Grid.Column" TargetName="EmployeeCountBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="EmployeeCountBorder" Value="1" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="EmployeeCountBorder" Value="1" />
+                    
+                    <Setter Property="Grid.Column" TargetName="BulkSignInOutBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="BulkSignInOutBorder" Value="2" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="BulkSignInOutBorder" Value="1" />
+                    
+                    <Setter Property="Grid.Column" TargetName="ArrivalsBorder" Value="0" />
+                    <Setter Property="Grid.Row" TargetName="ArrivalsBorder" Value="3" />
+                    <Setter Property="Grid.ColumnSpan" TargetName="ArrivalsBorder" Value="1" />
+                    <Setter Property="Grid.RowSpan" TargetName="ArrivalsBorder" Value="1" />
+                    <Setter Property="HeightRequest" TargetName="ArrivalsBorder" Value="650" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+</ContentPage>

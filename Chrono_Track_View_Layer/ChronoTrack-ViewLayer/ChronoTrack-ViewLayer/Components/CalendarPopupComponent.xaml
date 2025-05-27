@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChronoTrack_ViewLayer.Components.CalendarPopupComponent">
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 16"
+            Stroke="#E5E7EB"
+            StrokeThickness="1"
+            Shadow="{Shadow Brush='Black', Offset='0,4', Radius='10', Opacity='0.1'}">
+        <!-- Calendar Content -->
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20">
+            <!-- Header with month/year and navigation -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,12">
+                <Label x:Name="CalendarTitle" 
+                       Text="March 2025"
+                       Grid.Column="0"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#111827"
+                       VerticalOptions="Center"/>
+                <Button Text="&lt;" 
+                        Grid.Column="1"
+                        BackgroundColor="#F3F4F6"
+                        TextColor="#111827"
+                        HeightRequest="36"
+                        WidthRequest="36"
+                        Padding="0"
+                        CornerRadius="18"
+                        FontSize="16"
+                        Margin="0,0,10,0"
+                        HorizontalOptions="End"
+                        x:Name="PreviousMonthButton"
+                        Clicked="OnPreviousMonthClicked"/>
+                <Button Text="&gt;" 
+                        Grid.Column="2"
+                        BackgroundColor="#F3F4F6"
+                        TextColor="#111827"
+                        HeightRequest="36"
+                        WidthRequest="36"
+                        Padding="0"
+                        CornerRadius="18"
+                        FontSize="16"
+                        HorizontalOptions="End"
+                        x:Name="NextMonthButton"
+                        Clicked="OnNextMonthClicked"/>
+            </Grid>
+            
+            <!-- Calendar day headers -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,12">
+                <Label Text="Sun" Grid.Column="0" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Mon" Grid.Column="1" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Tue" Grid.Column="2" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Wed" Grid.Column="3" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Thu" Grid.Column="4" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Fri" Grid.Column="5" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+                <Label Text="Sat" Grid.Column="6" HorizontalOptions="Center" TextColor="#6B7280" FontSize="14"/>
+            </Grid>
+            
+            <!-- Calendar days grid -->
+            <CollectionView Grid.Row="2" 
+                           x:Name="CalendarDaysCollectionView"
+                           Margin="0,0,0,16">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" 
+                                   Span="7" 
+                                   HorizontalItemSpacing="10" 
+                                   VerticalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 8" 
+                               BackgroundColor="{Binding BackgroundColor}"
+                               HeightRequest="40"
+                               WidthRequest="40"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Opacity="{Binding Opacity}">
+                            <Label Text="{Binding Day}" 
+                                  TextColor="{Binding TextColor}"
+                                  FontAttributes="{Binding FontAttributes}"
+                                  HorizontalOptions="Center"
+                                  VerticalOptions="Center"
+                                  FontSize="14"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding Day}" 
+                                                     Tapped="OnDayTapped"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <!-- Close button -->
+            <Button Grid.Row="3" 
+                   Text="Close"
+                   BackgroundColor="#F3F4F6"
+                   TextColor="#111827"
+                   HeightRequest="40"
+                   CornerRadius="8"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   HorizontalOptions="End"
+                   Clicked="OnCloseButtonClicked"/>
+        </Grid>
+    </Border>
+</ContentView> 

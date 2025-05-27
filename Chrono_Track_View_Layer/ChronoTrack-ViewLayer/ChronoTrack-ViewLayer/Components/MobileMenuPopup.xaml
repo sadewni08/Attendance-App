@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChronoTrack_ViewLayer.Components.MobileMenuPopup"
+             BackgroundColor="#80000000"
+             InputTransparent="False"
+             HorizontalOptions="Fill"
+             VerticalOptions="Fill"
+             ZIndex="1000000">
+
+    <AbsoluteLayout>
+        <!-- Semi-transparent background -->
+        <BoxView Color="#80000000"
+                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                 AbsoluteLayout.LayoutFlags="All"
+                 x:Name="BackgroundOverlay">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackgroundTapped"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Menu Panel -->
+        <Border AbsoluteLayout.LayoutBounds="0,0,280,1"
+                AbsoluteLayout.LayoutFlags="HeightProportional"
+                BackgroundColor="White"
+                StrokeShape="RoundRectangle 0,16,16,0"
+                Margin="0"
+                Padding="16,24"
+                x:Name="MenuPanel"
+                TranslationX="-280">
+            <ScrollView>
+                <VerticalStackLayout Spacing="24">
+                    <!-- Menu Items -->
+                    <VerticalStackLayout Spacing="32">
+                        <!-- Home -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Grid.Column="0"
+                                   Source="home.png"
+                                   HeightRequest="24"
+                                   WidthRequest="24"/>
+                            <Label Grid.Column="1"
+                                   Text="Home"
+                                   TextColor="#0066FF"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnHomeClicked"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+
+                        <!-- History -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Grid.Column="0"
+                                   Source="history.png"
+                                   HeightRequest="24"
+                                   WidthRequest="24"/>
+                            <Label Grid.Column="1"
+                                   Text="History"
+                                   TextColor="#1E293B"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnHistoryClicked"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+
+                        <!-- Employees -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Grid.Column="0"
+                                   Source="employees.png"
+                                   HeightRequest="24"
+                                   WidthRequest="24"/>
+                            <Label Grid.Column="1"
+                                   Text="Employees"
+                                   TextColor="#1E293B"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEmployeesClicked"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+
+                        <!-- Report -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Grid.Column="0"
+                                   Source="report.png"
+                                   HeightRequest="24"
+                                   WidthRequest="24"/>
+                            <Label Grid.Column="1"
+                                   Text="Report"
+                                   TextColor="#1E293B"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnReportClicked"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+
+                        <!-- Settings -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Grid.Column="0"
+                                   Source="settings.png"
+                                   HeightRequest="24"
+                                   WidthRequest="24"/>
+                            <Label Grid.Column="1"
+                                   Text="Setting"
+                                   TextColor="#1E293B"
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnSettingsClicked"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </AbsoluteLayout>
+</ContentView> 

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+             xmlns:converters="clr-namespace:ChronoTrack_ViewLayer.Converters"
+             x:Class="ChronoTrack_ViewLayer.Pages.User.UserDashboardPage"
+             BackgroundColor="#F4F5F9">
+
+    <Grid RowDefinitions="Auto,*" x:Name="RootGrid" RowSpacing="0">
+        <!-- Header Component -->
+        <components:HeaderComponent Grid.Row="0" 
+                                    Style="{StaticResource HeaderStyle}" />
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1">
+            <Grid Padding="16,24,16,24" RowDefinitions="Auto,*" Margin="0">
+                <!-- Dashboard Title -->
+                <Label Text="Dashboard"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#1A2B45"
+                       Margin="0,0,0,16"
+                       Style="{StaticResource DashboardTitleStyle}"/>
+
+                <!-- Dashboard Content -->
+                <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="16" x:Name="DashboardContent">
+                    <!-- Top Row: Time Display and History -->
+                    <Grid Grid.Row="0" x:Name="TopRowGrid" ColumnDefinitions="3*,1*" ColumnSpacing="16" Style="{StaticResource TopRowGridStyle}">
+                        <!-- Time and Date Section -->
+                        <Border x:Name="TimeDisplayBorder"  
+                                Grid.Column="0"
+                                Style="{StaticResource TimeDisplayBorderStyle}"
+                                HeightRequest="380"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout Spacing="12" VerticalOptions="Center" HorizontalOptions="Center">
+                                <Label x:Name="TimeLabel"  
+                                       Text="8:02:09 AM"  
+                                       FontSize="56"  
+                                       TextColor="#2C3E82"
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="Today"  
+                                       Text="Today"  
+                                       FontSize="40"  
+                                       FontAttributes="Bold"  
+                                       TextColor="#5C607A"
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="RealTimeInsight"  
+                                       Text="Real-time Insight"  
+                                       TextColor="#7A8AA0"  
+                                       FontSize="28"
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="DateLabel"  
+                                       Text="03rd March 2025" 
+                                       FontSize="20"  
+                                       FontFamily="Lexend"
+                                       FontAttributes="Bold"
+                                       TextColor="#252C58"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Right Section with View History and Recent Activity -->
+                        <Grid Grid.Column="1" RowDefinitions="Auto,*" RowSpacing="24" x:Name="RightSection">
+                            <!-- View History Button -->
+                            <Border Grid.Row="0"
+                                    Style="{StaticResource HistoryButtonCardStyle}"
+                                    x:Name="HistoryButtonCard">
+                                <Button Text="View History"
+                                        BackgroundColor="#3B82F6"
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        HeightRequest="60"
+                                        CornerRadius="12"
+                                        Clicked="OnViewHistoryClicked"
+                                        Style="{StaticResource ResponsiveButtonStyle}"
+                                        x:Name="ViewHistoryButton"/>
+                            </Border>
+
+                            <!-- Recent Activity Card -->
+                            <Border Grid.Row="1"
+                                    Style="{StaticResource RecentActivityCardStyle}"
+                                    x:Name="RecentActivityCard">
+                                <VerticalStackLayout Spacing="12">
+                                    <Label Text="Recent Activity"
+                                           TextColor="#1A2B45"
+                                           FontAttributes="Bold"
+                                           FontSize="18"
+                                           x:Name="RecentActivityTitle"/>
+                                    
+                                    <CollectionView x:Name="AttendanceHistoryList" 
+                                                    HeightRequest="180"
+                                                    EmptyView="No attendance records found">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Padding="0,12" ColumnDefinitions="Auto,*">
+                                                    <Border StrokeShape="RoundRectangle 24"
+                                                            HeightRequest="48"
+                                                            WidthRequest="48"
+                                                            BackgroundColor="#E6F2FF">
+                                                        <Image Source="checkmark.png"
+                                                               Margin="10"
+                                                               HeightRequest="28"/>
+                                                    </Border>
+                                                    <VerticalStackLayout Grid.Column="1" Margin="16,0,0,0">
+                                                        <Label Text="{Binding FormattedDate}"
+                                                               TextColor="#1A2B45"
+                                                               FontAttributes="Bold"
+                                                               FontSize="16"/>
+                                                        <HorizontalStackLayout Spacing="12">
+                                                            <Label Text="{Binding FormattedCheckInTime, StringFormat='In: {0}'}"
+                                                                   TextColor="#6B7280"
+                                                                   FontSize="14"/>
+                                                            <Label Text="{Binding FormattedCheckOutTime, StringFormat='Out: {0}'}"
+                                                                   TextColor="#6B7280"
+                                                                   FontSize="14"
+                                                                   IsVisible="{Binding CheckOutTime, Converter={StaticResource IsNotZeroConverter}}"/>
+                                                        </HorizontalStackLayout>
+                                                    </VerticalStackLayout>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Grid>
+
+                    <!-- Work Log Section -->
+                    <Grid Grid.Row="1" ColumnDefinitions="*" x:Name="WorkLogGrid" Style="{StaticResource WorkLogGridStyle}">
+                        <Border StrokeShape="RoundRectangle 16"
+                                BackgroundColor="White"
+                                Padding="32"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand"
+                                x:Name="WorkLogCard">
+                            <VerticalStackLayout Spacing="24" HorizontalOptions="Center">
+                                <Label Text="Work Log"
+                                       HorizontalOptions="Center"
+                                       TextColor="#1A2B45"
+                                       FontAttributes="Bold"
+                                       FontSize="28"
+                                       x:Name="WorkLogTitle"/>
+                                
+                                <!-- Status Section -->
+                                <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto" RowSpacing="16" HorizontalOptions="Center">
+                                    <!-- Status Badge -->
+                                    <Border Grid.Column="0" Grid.Row="0"
+                                            BackgroundColor="#DCFCE7"
+                                            StrokeShape="RoundRectangle 16"
+                                            Padding="12,6"
+                                            HorizontalOptions="Center"
+                                            Margin="0,0,0,8">
+                                        <Label x:Name="AttendanceStatusBadge"
+                                               Text="Waiting"
+                                               TextColor="#10B981"
+                                               FontSize="14"
+                                               FontAttributes="Bold"/>
+                                    </Border>
+                                                                      
+                                    <!-- Attendance Status Labels -->
+                                    <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="You haven't checked in today" 
+                                               x:Name="AttendanceStatusLabel"
+                                               TextColor="#1A2B45"
+                                               FontAttributes="Bold"
+                                               FontSize="18"
+                                               HorizontalTextAlignment="Center"/>
+                                        <Label Text="Check-in time: --:--" 
+                                               x:Name="CheckInTimeLabel"
+                                               TextColor="#6B7280"
+                                               FontSize="16"
+                                               IsVisible="false"
+                                               HorizontalTextAlignment="Center"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Action Buttons -->
+                                <Grid ColumnDefinitions="*,*" 
+                                      RowDefinitions="Auto" 
+                                      ColumnSpacing="16" 
+                                      Margin="0,12"  
+                                      HorizontalOptions="Center" 
+                                      x:Name="ActionButtonsGrid">
+                                    <Button Grid.Column="0" 
+                                            Text="Check In"
+                                            BackgroundColor="#3B82F6"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            HeightRequest="50"
+                                            WidthRequest="160"
+                                            CornerRadius="10"
+                                            Clicked="OnCheckInClicked"
+                                            Style="{StaticResource ResponsiveButtonStyle}"
+                                            x:Name="CheckInButton">
+                                        <Button.Shadow>
+                                            <Shadow Brush="#3B82F6"
+                                                    Opacity="0.3"
+                                                    Radius="20"
+                                                    Offset="0,10"/>
+                                        </Button.Shadow>
+                                    </Button>
+                                    <Button Grid.Column="1" 
+                                            Text="Check Out"
+                                            BackgroundColor="#EF4444"
+                                            TextColor="White"
+                                            FontAttributes="Bold"
+                                            HeightRequest="50"
+                                            WidthRequest="160"
+                                            CornerRadius="10"
+                                            Clicked="OnCheckOutClicked"
+                                            Style="{StaticResource ResponsiveButtonStyle}"
+                                            x:Name="CheckOutButton">
+                                        <Button.Shadow>
+                                            <Shadow Brush="#EF4444"
+                                                    Opacity="0.3"
+                                                    Radius="20"
+                                                    Offset="0,10"/>
+                                        </Button.Shadow>
+                                    </Button>
+                                </Grid>
+
+                                <!-- Work Status Message -->
+                                <Label x:Name="WorkStatusMessage" 
+                                       Text=""
+                                       TextColor="#6B7280"
+                                       FontSize="16"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0,16,0,0"
+                                       IsVisible="False"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </Grid>
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowSizeStates">
+            <VisualState x:Name="Desktop">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="1280" />
+                </VisualState.StateTriggers>
+            </VisualState>
+            <VisualState x:Name="Tablet">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="768" />
+                </VisualState.StateTriggers>
+            </VisualState>
+            <VisualState x:Name="Mobile">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="TopRowGrid" Property="Grid.ColumnDefinitions" Value="*" />
+                    <Setter TargetName="RightSection" Property="Grid.Column" Value="0" />
+                    <Setter TargetName="RightSection" Property="Grid.Row" Value="1" />
+                    <Setter TargetName="DashboardContent" Property="Grid.RowSpacing" Value="16" />
+                    <Setter TargetName="DashboardContent" Property="Padding" Value="8" />
+                    <Setter TargetName="TimeLabel" Property="Label.FontSize" Value="48" />
+                    <Setter TargetName="Today" Property="Label.FontSize" Value="32" />
+                    <Setter TargetName="RealTimeInsight" Property="Label.FontSize" Value="24" />
+                    <Setter TargetName="DateLabel" Property="Label.FontSize" Value="18" />
+                    <Setter TargetName="WorkLogTitle" Property="Label.FontSize" Value="24" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+    <ContentPage.Resources>
+        <!-- Converters -->
+        <converters:TimeSpanToVisibilityConverter x:Key="IsNotZeroConverter" />
+        
+        <!-- Styles -->
+        <Style x:Key="DashboardTitleStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="TextColor" Value="#111827" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+        
+        <Style x:Key="ResponsiveButtonStyle" TargetType="Button">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="HeightRequest" Value="60" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+        </Style>
+
+        <Style x:Key="TopRowGridStyle" TargetType="Grid">
+            <Setter Property="ColumnDefinitions" Value="*,*" />
+            <Setter Property="ColumnSpacing" Value="24" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        </Style>
+        
+        <Style TargetType="Grid" x:Key="WorkLogGridStyle">
+            <Setter Property="Margin" Value="0,0,0,0" />
+        </Style>
+        
+        <Style TargetType="components:HeaderComponent" x:Key="HeaderStyle">
+            <Style.Triggers>
+                <DataTrigger TargetType="components:HeaderComponent" Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=Width}" Value="0">
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TimeDisplayBorderStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="VerticalOptions" Value="FillAndExpand" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="Padding" Value="24" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="RecentActivityCardStyle">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+            <Setter Property="Padding" Value="24" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="VerticalOptions" Value="FillAndExpand" />
+        </Style>
+        
+        <Style TargetType="Border" x:Key="HistoryButtonCardStyle">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+            <Setter Property="Padding" Value="24" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+
+        <Style TargetType="Label" x:Key="StatusLabelStyle">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextColor" Value="#6B7280" />
+        </Style>
+        
+        <Style TargetType="Label" x:Key="StatusValueLabelStyle">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextColor" Value="#10B981" />
+        </Style>
+    </ContentPage.Resources>
+</ContentPage> 

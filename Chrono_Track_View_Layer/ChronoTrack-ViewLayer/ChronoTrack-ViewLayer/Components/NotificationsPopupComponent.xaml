@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChronoTrack_ViewLayer.Components.NotificationsPopupComponent">
+    <Border BackgroundColor="White"
+            StrokeShape="RoundRectangle 16"
+            Stroke="#E5E7EB"
+            StrokeThickness="1"
+            Shadow="{Shadow Brush='Black', Offset='0,4', Radius='10', Opacity='0.1'}">
+        <!-- Notifications Content -->
+        <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+            <!-- Header with title -->
+            <Label Text="Notifications" 
+                   Grid.Row="0"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#111827"
+                   Margin="0,0,0,16"/>
+            
+            <!-- Notifications list -->
+            <ScrollView Grid.Row="1" Margin="0,0,0,16">
+                <CollectionView x:Name="NotificationsListView"
+                               ItemsSource="{Binding Notifications}">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="No notifications" 
+                                  TextColor="#6B7280"
+                                  HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeShape="RoundRectangle 12" 
+                                   Stroke="#E5E7EB"
+                                   StrokeThickness="1"
+                                   Padding="16"
+                                   Margin="0,0,0,12"
+                                   BackgroundColor="{Binding BackgroundColor}">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding Title}" 
+                                          TextColor="#111827"
+                                          FontAttributes="Bold"
+                                          FontSize="16"/>
+                                    <Label Text="{Binding Message}"
+                                          TextColor="#6B7280"
+                                          FontSize="14"/>
+                                    <Label Text="{Binding TimeSince}"
+                                          TextColor="#9CA3AF"
+                                          FontSize="12"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+            
+            <!-- Footer with buttons -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                <Button Grid.Column="0"
+                       Text="View All Notifications"
+                       BackgroundColor="#3B82F6"
+                       TextColor="White"
+                       HeightRequest="40"
+                       CornerRadius="8"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       Clicked="OnViewAllNotificationsClicked"/>
+                
+                <Button Grid.Column="1" 
+                       Text="Close"
+                       BackgroundColor="#F3F4F6"
+                       TextColor="#111827"
+                       HeightRequest="40"
+                       CornerRadius="8"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       Margin="12,0,0,0"
+                       Clicked="OnCloseButtonClicked"/>
+            </Grid>
+        </Grid>
+    </Border>
+</ContentView> 

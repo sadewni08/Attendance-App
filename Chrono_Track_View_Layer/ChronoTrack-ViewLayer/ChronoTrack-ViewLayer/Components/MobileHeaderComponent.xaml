@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:ChronoTrack_ViewLayer.Components"
+             x:Class="ChronoTrack_ViewLayer.Components.MobileHeaderComponent"
+             ZIndex="2000">
+
+    <Grid>
+        <AbsoluteLayout>
+            <!-- Main Header -->
+            <Border AbsoluteLayout.LayoutBounds="0, 0, 1, 80"
+                    AbsoluteLayout.LayoutFlags="WidthProportional"
+                    BackgroundColor="White"
+                    Stroke="#E5E7EB"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="16,12"
+                    Margin="16,8"
+                    ZIndex="10000">
+                
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" 
+                      ColumnSpacing="16">
+
+                    <!-- Hamburger Menu -->
+                    <Border Grid.Column="0"
+                            x:Name="MenuButton"
+                            BackgroundColor="Transparent"
+                            HeightRequest="40"
+                            WidthRequest="40"
+                            Padding="8"
+                            StrokeShape="RoundRectangle 8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnMenuClicked"/>
+                        </Border.GestureRecognizers>
+                        <Image Source="menu.png"
+                               HeightRequest="24"
+                               WidthRequest="24"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               SemanticProperties.Description="Menu icon"/>
+                    </Border>
+
+                    <!-- Logo -->
+                    <Label Text="ChronoTrack"
+                           Grid.Column="1"
+                           FontFamily="Lexend"
+                           TextColor="#3982D5"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                    <!-- Calendar Icon -->
+                    <Border Grid.Column="2"
+                            x:Name="CalendarBorder"
+                            BackgroundColor="#CFD7FD"
+                            HeightRequest="40"
+                            WidthRequest="40"
+                            Padding="8"
+                            StrokeShape="RoundRectangle 8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CalendarCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Image Source="calendar.png"
+                               HeightRequest="24"
+                               WidthRequest="24"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               SemanticProperties.Description="Calendar icon"/>
+                    </Border>
+
+                    <!-- Profile Icon -->
+                    <Border Grid.Column="3"
+                            x:Name="ProfileBorder"
+                            StrokeShape="RoundRectangle 20"
+                            HeightRequest="40"
+                            WidthRequest="40"
+                            BackgroundColor="#F97316"
+                            Padding="0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnProfileClicked"/>
+                        </Border.GestureRecognizers>
+                        <Image Source="admin_profile.png"
+                               Aspect="AspectFill"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Search Bar (Hidden by default, shown when search is activated) -->
+            <Border x:Name="SearchBar"
+                    IsVisible="False"
+                    AbsoluteLayout.LayoutBounds="0, 80, 1, 60"
+                    AbsoluteLayout.LayoutFlags="WidthProportional"
+                    BackgroundColor="White"
+                    Stroke="#E5E7EB"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="16,8"
+                    Margin="16,0,16,8"
+                    ZIndex="1">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Image Grid.Column="0"
+                           Source="searchicon.png"
+                           HeightRequest="20"
+                           WidthRequest="20"
+                           Opacity="0.6"/>
+                    <Entry Grid.Column="1"
+                           Placeholder="Quick Search..."
+                           PlaceholderColor="#9CA3AF"
+                           TextColor="#111827"
+                           BackgroundColor="Transparent"
+                           Margin="8,0,0,0"/>
+                </Grid>
+            </Border>
+        </AbsoluteLayout>
+
+        <!-- Menu Popup (Placed outside AbsoluteLayout to ensure it's always on top) -->
+        <components:MobileMenuPopup x:Name="MenuPopup" 
+                                   IsVisible="False"
+                                   InputTransparent="False"
+                                   HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"
+                                   ZIndex="9999"/>
+    </Grid>
+
+    <ContentView.Resources>
+        <!-- Icon Button Style -->
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="BorderColor" Value="Transparent"/>
+            <Setter Property="HeightRequest" Value="40"/>
+            <Setter Property="WidthRequest" Value="40"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+
+        <!-- Responsive Header Style -->
+        <Style x:Key="ResponsiveHeaderStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger TargetType="Grid" 
+                            Binding="{Binding Source={x:Reference WindowSizeStates}, Path=CurrentState.Name}" 
+                            Value="Desktop">
+                    <Setter Property="IsVisible" Value="False"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Grid" 
+                            Binding="{Binding Source={x:Reference WindowSizeStates}, Path=CurrentState.Name}" 
+                            Value="Mobile">
+                    <Setter Property="IsVisible" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </ContentView.Resources>
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowSizeStates">
+            <VisualState x:Name="Desktop">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="1024"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+            <VisualState x:Name="Tablet">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="640"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+            <VisualState x:Name="Mobile">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+</ContentView> 

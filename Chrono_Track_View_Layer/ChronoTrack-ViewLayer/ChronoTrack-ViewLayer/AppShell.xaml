@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ChronoTrack_ViewLayer.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ChronoTrack_ViewLayer"
+    xmlns:pages="clr-namespace:ChronoTrack_ViewLayer.Pages"
+    Shell.NavBarIsVisible="False"
+    Shell.FlyoutBehavior="Disabled">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+    <ShellContent
+        Title="Summary"
+        ContentTemplate="{DataTemplate pages:SummaryPage}"
+        Route="SummaryPage" />
+
+    <ShellContent
+        Title="Employee Details"
+        ContentTemplate="{DataTemplate pages:EmployeeDetailsPage}"
+        Route="EmployeeDetailsPage" />
+
+    <ShellContent
+        Title="Dashboard"
+        ContentTemplate="{DataTemplate pages:DashboardPage}"
+        Route="DashboardPage" />
+
+</Shell> 

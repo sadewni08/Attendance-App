@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChronoTrack_ViewLayer.Components.SidebarComponent">
+    <Border BackgroundColor="White"  
+            Padding="10" 
+            Margin="10,47,0,0"
+            StrokeShape="RoundRectangle 16"  
+            Stroke="Transparent" 
+            HeightRequest="820"
+            WidthRequest="80">
+        <VerticalStackLayout Spacing="24">
+            <Border x:Name="DashboardBorder"
+                BackgroundColor="Transparent"
+                Padding="8"  
+                StrokeShape="RoundRectangle 20"  
+                Stroke="Transparent"
+                Margin="0,20,0,0"
+                HeightRequest="50"  
+                WidthRequest="50">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDashboardClicked"/>
+                </Border.GestureRecognizers>
+                <Image Source="homeicon.png"  
+                   HeightRequest="28"  
+                   WidthRequest="28"
+                   SemanticProperties.Description="Home icon"/>
+            </Border>
+            <Border x:Name="HistoryBorder"
+                BackgroundColor="Transparent"
+                Padding="8"  
+                StrokeShape="RoundRectangle 20"  
+                Stroke="Transparent"  
+                Margin="0,20,0,0"
+                HeightRequest="50"  
+                WidthRequest="50">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHistoryClicked"/>
+                </Border.GestureRecognizers>
+                <Image Source="historyicon.png"  
+                   HeightRequest="28"  
+                   WidthRequest="28"  
+                   SemanticProperties.Description="History icon"/>
+            </Border>
+            <Border x:Name="EmployeeDetailsBorder"
+                BackgroundColor="Transparent"
+                Padding="8"  
+                StrokeShape="RoundRectangle 20"  
+                Stroke="Transparent"  
+                Margin="0,20,0,0"
+                HeightRequest="50"  
+                WidthRequest="50">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnEmployeeDetailsClicked"/>
+                </Border.GestureRecognizers>
+                <Image Source="businessteamicon.png"  
+                   HeightRequest="28"  
+                   WidthRequest="28"  
+                   SemanticProperties.Description="Employees icon"/>
+            </Border>
+            <Border BackgroundColor="Transparent"  
+                Padding="8"  
+                StrokeShape="RoundRectangle 20"  
+                Stroke="Transparent"  
+                Margin="0,20,0,0"
+                HeightRequest="50"  
+                WidthRequest="50">
+                <Image Source="columncharticon.png"  
+                   HeightRequest="28"  
+                   WidthRequest="28"  
+                   SemanticProperties.Description="Reports icon"/>
+            </Border>
+            <Border BackgroundColor="Transparent"  
+                Padding="8"  
+                StrokeShape="RoundRectangle 20"  
+                Stroke="Transparent"  
+                Margin="0,20,0,0"
+                HeightRequest="50"  
+                WidthRequest="50">
+                <Image Source="settingsicon.png"  
+                   HeightRequest="28"  
+                   WidthRequest="28"  
+                   SemanticProperties.Description="Settings icon"/>
+            </Border>
+        </VerticalStackLayout>
+    </Border>
+</ContentView> 
