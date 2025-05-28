@@ -1,4 +1,3 @@
-<!-- =========  UserHistoryPage.xaml  ========= -->
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -6,190 +5,282 @@
              xmlns:local="clr-namespace:ChronoTrack_ViewLayer.Pages.User"
              xmlns:converters="clr-namespace:ChronoTrack_ViewLayer.Pages.User"
              x:Class="ChronoTrack_ViewLayer.Pages.User.UserHistoryPage"
-             BackgroundColor="#F4F5F9">
+             BackgroundColor="#F4F5F9"
+             SizeChanged="OnPageSizeChanged">
 
-    <!-- Main grid ---------------------------------------------------------------->
     <Grid RowDefinitions="Auto,*" x:Name="RootGrid" RowSpacing="0">
+        <!-- Header Component -->
+        <components:HeaderComponent Grid.Row="0" 
+                                   Style="{StaticResource HeaderStyle}" />
 
-        <!-- Header -->
-        <components:HeaderComponent Grid.Row="0"
-                                    Style="{StaticResource HeaderStyle}" />
-
-        <!-- Scrollable body -->
+        <!-- Main Content -->
         <ScrollView Grid.Row="1">
-            <Grid Padding="32"
-                  RowDefinitions="Auto,*"
-                  Margin="0,24,0,0">
-
-                <!-- Page title -->
+            <Grid Padding="32" RowDefinitions="Auto,*" Margin="0,24,0,0">
+                <!-- Page Title and Navigation -->
                 <Label Text="Attendance History"
                        FontSize="28"
                        FontAttributes="Bold"
                        TextColor="#1A2B45"
                        Margin="0,0,0,24"/>
 
-                <!-- Card -->
-                <Grid Grid.Row="1" RowDefinitions="*">
-
+                <!-- Main Content -->
+                <Grid Grid.Row="1" RowDefinitions="*" RowSpacing="24">
+                    <!-- Table Section -->
                     <Border StrokeShape="RoundRectangle 16"
-                            BackgroundColor="White"
-                            Padding="0"
+                            BackgroundColor="White" 
+                            Padding="0" 
                             VerticalOptions="Fill"
                             HorizontalOptions="Fill"
                             Margin="0,0,0,20">
-
-                        <Grid RowDefinitions="Auto,Auto,*,Auto">
-
-                            <!-- Card header (title + date) -->
-                            <Grid Grid.Row="0"
-                                  ColumnDefinitions="*,Auto"
+                        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+                            <!-- Title and Date Select -->
+                            <Grid Grid.Row="0" 
+                                  ColumnDefinitions="*,Auto" 
                                   Padding="24,24,24,12">
-
-                                <Label Grid.Column="0"
-                                       Text="Attendance Records"
-                                       FontSize="20"
-                                       FontAttributes="Bold"
+                                <Label Grid.Column="0" 
+                                       Text="Attendance Records" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
                                        TextColor="#111827"
-                                       VerticalOptions="Center"/>
+                                       VerticalOptions="Center"
+                                       x:Name="MainTitleLabel"/>
 
-                                <Border Grid.Column="1"
-                                        Padding="12,8"
-                                        StrokeShape="RoundRectangle 6"
-                                        BackgroundColor="#F3F4F6">
+                                <Border Grid.Column="1" Padding="12,8" StrokeShape="RoundRectangle 6" BackgroundColor="#F3F4F6">
                                     <HorizontalStackLayout Spacing="8">
-                                        <Image Source="calendar.png"
-                                               WidthRequest="16"
-                                               HeightRequest="16"/>
-                                        <Label Text="03 March 2025"
-                                               FontSize="14"
-                                               TextColor="#111827"
-                                               VerticalOptions="Center"/>
+                                        <Image Source="calendar.png" WidthRequest="16" HeightRequest="16" />
+                                        <Label Text="03 March 2025" FontSize="14" TextColor="#111827" VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                 </Border>
                             </Grid>
 
                             <!-- Divider -->
-                            <BoxView Grid.Row="1"
-                                     Color="#E5E7EB"
+                            <BoxView Grid.Row="1" 
+                                     Color="#E5E7EB" 
                                      HeightRequest="1"
                                      HorizontalOptions="Fill"
                                      Margin="24,0"/>
 
-                            <!-- Table --------------------------------------------------->
-                            <Grid Grid.Row="2" RowDefinitions="Auto,*">
+                            <!-- Table Content -->
+                            <Grid Grid.Row="2" RowDefinitions="Auto,*" Margin="0">
+                                <!-- Table Header -->
+                                <Grid Grid.Row="0" 
+                                      ColumnDefinitions="1.5*,1.5*,0.8*,1.2*,1*,1*,1.5*" 
+                                      Padding="24,16" 
+                                      BackgroundColor="#F9FAFB" 
+                                      x:Name="TableHeaderGrid">
+                                    <Label Grid.Column="0" 
+                                           Text="Attendance ID" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="AttendanceIdHeader"/>
+                                    <Label Grid.Column="1" 
+                                           Text="Date" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="DateHeader"/>
+                                    <Label Grid.Column="2" 
+                                           Text="Day" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="DayHeader"/>
+                                    <Label Grid.Column="3" 
+                                           Text="Check-in (Local)" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="CheckInHeader"/>
+                                    <Label Grid.Column="4" 
+                                           Text="Check-out (Local)" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="CheckOutHeader"/>
+                                    <Label Grid.Column="5" 
+                                           Text="Work hours" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"
+                                           x:Name="WorkHoursHeader"/>
+                                    <Label Grid.Column="6" 
+                                           Text="Status" 
+                                           FontAttributes="Bold" 
+                                           TextColor="#111827" 
+                                           FontSize="14"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="Center"/>
+                                </Grid>
 
-                                <!-- Column headers -->
-                            <Grid Grid.Row="0"
-                                      ColumnDefinitions="1.5*,1.5*,0.8*,1.2*,1*,1*,1.5*"
-                                      Padding="24,16"
-                                      BackgroundColor="#F9FAFB">
+                                <!-- Table Content -->
+                                <CollectionView Grid.Row="1"
+                                              SelectionMode="None"
+                                              x:Name="HistoryCollectionView"
+                                              VerticalOptions="Fill"
+                                              Margin="0,1,0,0">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="0" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.EmptyView>
+                                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="0,40">
+                                            <Image Source="empty_state.png" HeightRequest="100" WidthRequest="100" Opacity="0.5" />
+                                            <Label Text="No attendance records found" TextColor="#6B7280" Margin="0,16,0,0" />
+                                        </VerticalStackLayout>
+                                    </CollectionView.EmptyView>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="local:HistoryItem">
+                                            <Grid ColumnDefinitions="1.5*,1.5*,0.8*,1.2*,1*,1*,1.5*" 
+                                                  Padding="24,16" 
+                                                  BackgroundColor="{Binding IsEvenRow, Converter={StaticResource BoolToColorConverter}}">
 
-                                <Label Grid.Column="0" Text="Attendance ID" FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="Date"           FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="Day"            FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="Check-in (Local)"  FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="4" Text="Check-out (Local)" FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="5" Text="Work hours"     FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                <Label Grid.Column="6" Text="Status"         FontAttributes="Bold" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                            </Grid>
+                                                <Label Grid.Column="0" 
+                                                       Text="{Binding AttendanceId}" 
+                                                       TextColor="#111827" 
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
 
-                            <!-- Data rows -->
-                            <CollectionView Grid.Row="1"
-                                                x:Name="HistoryCollectionView"
-                                                SelectionMode="None"
-                                                VerticalOptions="Fill"
-                                                Margin="0,1,0,0">
-                                <CollectionView.ItemsLayout>
-                                    <LinearItemsLayout Orientation="Vertical"
-                                                           ItemSpacing="0"/>
-                                </CollectionView.ItemsLayout>
+                                                <Label Grid.Column="1" 
+                                                       Text="{Binding FormattedDate}" 
+                                                       TextColor="#111827" 
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
 
-                                <!-- Empty state -->
-                                <CollectionView.EmptyView>
-                                    <VerticalStackLayout VerticalOptions="Center"
-                                                             HorizontalOptions="Center"
-                                                             Margin="0,40">
-                                        <Image Source="empty_state.png"
-                                                   HeightRequest="100"
-                                                   WidthRequest="100"
-                                                   Opacity="0.5"/>
-                                        <Label Text="No attendance records found"
-                                                   TextColor="#6B7280"
-                                                   Margin="0,16,0,0"/>
-                                    </VerticalStackLayout>
-                                </CollectionView.EmptyView>
+                                                <Label Grid.Column="2" 
+                                                       Text="{Binding Day}" 
+                                                       TextColor="#111827" 
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
 
-                                <!-- Row template -->
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="local:HistoryItem">
-                                        <Grid ColumnDefinitions="1.5*,1.5*,0.8*,1.2*,1*,1*,1.5*"
-                                                  Padding="24,16"
-                                                  BackgroundColor="{Binding IsEvenRow,
-                                                                           Converter={StaticResource BoolToColorConverter}}">
+                                                <Label Grid.Column="3" 
+                                                       Text="{Binding FormattedCheckInTime}" 
+                                                       TextColor="#111827" 
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
 
-                                            <Label Grid.Column="0" Text="{Binding AttendanceId}"        TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Grid.Column="1" Text="{Binding FormattedDate}"       TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Grid.Column="2" Text="{Binding Day}"                 TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Grid.Column="3" Text="{Binding FormattedCheckInTime}" TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Grid.Column="4" Text="{Binding FormattedCheckOutTime}"TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
-                                            <Label Grid.Column="5" Text="{Binding FormattedDuration}"    TextColor="#111827" FontSize="14" VerticalOptions="Center"/>
+                                                <Label Grid.Column="4"
+                                                       Text="{Binding FormattedCheckOutTime}"
+                                                       TextColor="#111827"
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
 
-                                            <Border Grid.Column="6"
+                                                <Label Grid.Column="5"
+                                                       Text="{Binding FormattedDuration}"
+                                                       TextColor="#111827"
+                                                       FontSize="14"
+                                                       LineBreakMode="NoWrap"
+                                                       VerticalOptions="Center"/>
+
+                                                <Border Grid.Column="6"
                                                         StrokeShape="RoundRectangle 6"
                                                         Padding="12,4"
                                                         HorizontalOptions="Start"
                                                         VerticalOptions="Center"
-                                                        BackgroundColor="{Binding Status,
-                                                                                 Converter={StaticResource StatusColorConverter}}">
-                                                <Label Text="{Binding Status}"
+                                                        BackgroundColor="{Binding Status, Converter={StaticResource StatusColorConverter}}">
+                                                    <Label Text="{Binding Status}"
                                                            TextColor="#111827"
                                                            FontSize="14"
+                                                           LineBreakMode="NoWrap"
                                                            HorizontalOptions="Center"
                                                            VerticalOptions="Center"/>
-                                            </Border>
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </Grid>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
 
-                        <!-- Pagination footer --------------------------------------->
-                            <Grid Grid.Row="3"
+                            <!-- Pagination -->
+                            <Grid Grid.Row="3" 
                                   Padding="24,16"
                                   BackgroundColor="#F9FAFB"
                                   RowDefinitions="Auto,Auto">
 
+                                <!-- Pagination Info -->
                                 <HorizontalStackLayout Grid.Row="0"
-                                                       HorizontalOptions="Center"
-                                                       Spacing="4">
-                                    <Label Text="Showing"               TextColor="#6B7280"/>
-                                    <Label Text="{Binding StartItem}"   TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
-                                    <Label Text="to"                    TextColor="#6B7280"/>
-                                    <Label Text="{Binding EndItem}"     TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
-                                    <Label Text="of"                    TextColor="#6B7280"/>
-                                    <Label Text="{Binding TotalItems}"  TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
-                                    <Label Text="entries"               TextColor="#6B7280"/>
+                                                     HorizontalOptions="Center"
+                                                     Spacing="4"
+                                                     x:Name="PaginationInfoStack">
+                                    <Label Text="Showing" TextColor="#6B7280" VerticalOptions="Center"/>
+                                    <Label Text="{Binding StartItem}" TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
+                                    <Label Text="to" TextColor="#6B7280" VerticalOptions="Center"/>
+                                    <Label Text="{Binding EndItem}" TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
+                                    <Label Text="of" TextColor="#6B7280" VerticalOptions="Center"/>
+                                    <Label Text="{Binding TotalItems}" TextColor="#111827" FontAttributes="Bold" Margin="5,0"/>
+                                    <Label Text="entries" TextColor="#6B7280" VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
 
+                                <!-- Pagination Controls -->
                                 <HorizontalStackLayout Grid.Row="1"
-                                                       HorizontalOptions="Center"
-                                                       Spacing="8"
-                                                       Margin="0,20,0,0">
-                                    <Button Text="Previous" BackgroundColor="#F3F4F6" TextColor="#374151"
+                                                     HorizontalOptions="Center" 
+                                                     Spacing="8"
+                                                     Margin="0,20,0,0"
+                                                     x:Name="PaginationControls">
+                                    <Button Text="Previous" 
+                                            BackgroundColor="#F3F4F6" 
+                                            TextColor="#374151" 
                                             Clicked="OnPreviousClicked"
-                                            HeightRequest="40" WidthRequest="120" FontSize="14"/>
-                                    <Button Text="1"  BackgroundColor="#0066FF" TextColor="White"
-                                            Clicked="OnPageNumberClicked" HeightRequest="40" WidthRequest="40" FontSize="14"/>
-                                    <Button Text="2"  BackgroundColor="#F3F4F6" TextColor="#374151"
-                                            Clicked="OnPageNumberClicked" HeightRequest="40" WidthRequest="40" FontSize="14"/>
-                                    <Button Text="3"  BackgroundColor="#F3F4F6" TextColor="#374151"
-                                            Clicked="OnPageNumberClicked" HeightRequest="40" WidthRequest="40" FontSize="14"/>
-                                    <Label Text="…" TextColor="#374151" VerticalOptions="Center" FontSize="14"/>
-                                    <Button Text="8"  BackgroundColor="#F3F4F6" TextColor="#374151"
-                                            Clicked="OnPageNumberClicked" HeightRequest="40" WidthRequest="40" FontSize="14"/>
-                                    <Button Text="Next" BackgroundColor="#F3F4F6" TextColor="#374151"
+                                            HeightRequest="40"
+                                            WidthRequest="120"
+                                            FontSize="14"
+                                            x:Name="PreviousButton"/>
+                                    <Button Text="1" 
+                                            BackgroundColor="#0066FF" 
+                                            TextColor="White" 
+                                            Clicked="OnPageNumberClicked"
+                                            HeightRequest="40"
+                                            WidthRequest="40"
+                                            FontSize="14"/>
+                                    <Button Text="2" 
+                                            BackgroundColor="#F3F4F6" 
+                                            TextColor="#374151" 
+                                            Clicked="OnPageNumberClicked"
+                                            HeightRequest="40"
+                                            WidthRequest="40"
+                                            FontSize="14"/>
+                                    <Button Text="3" 
+                                            BackgroundColor="#F3F4F6" 
+                                            TextColor="#374151" 
+                                            Clicked="OnPageNumberClicked"
+                                            HeightRequest="40"
+                                            WidthRequest="40"
+                                            FontSize="14"/>
+                                    <Label Text="..." 
+                                           TextColor="#374151"
+                                           VerticalOptions="Center"
+                                           FontSize="14"/>
+                                    <Button Text="8" 
+                                            BackgroundColor="#F3F4F6" 
+                                            TextColor="#374151" 
+                                            Clicked="OnPageNumberClicked"
+                                            HeightRequest="40"
+                                            WidthRequest="40"
+                                            FontSize="14"/>
+                                    <Button Text="Next" 
+                                            BackgroundColor="#F3F4F6" 
+                                            TextColor="#374151" 
                                             Clicked="OnNextClicked"
-                                            HeightRequest="40" WidthRequest="120" FontSize="14"/>
+                                            HeightRequest="40"
+                                            WidthRequest="120"
+                                            FontSize="14"
+                                            x:Name="NextButton"/>
                                 </HorizontalStackLayout>
                             </Grid>
                         </Grid>
@@ -199,20 +290,24 @@
         </ScrollView>
     </Grid>
 
-    <!-- Resources -->
-                        <ContentPage.Resources>
-                            <converters:StatusColorConverter  x:Key="StatusColorConverter"/>
-                            <converters:BoolToColorConverter  x:Key="BoolToColorConverter"/>
-                            <converters:InverseBoolConverter  x:Key="InverseBoolConverter"/>
+    <!-- Resources for converters and styles -->
+    <ContentPage.Resources>
+        <!-- Status Color Converter -->
+        <converters:StatusColorConverter x:Key="StatusColorConverter" />
 
-                            <Style TargetType="components:HeaderComponent" x:Key="HeaderStyle">
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="components:HeaderComponent"
-                             Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=Width}"
-                             Value="0">
-                                        <Setter Property="IsVisible" Value="True"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentPage.Resources>
-</ContentPage>
+        <!-- Bool to Color Converter -->
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+
+        <!-- Inverse Bool Converter -->
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+        <!-- Header Component Style -->
+        <Style TargetType="components:HeaderComponent" x:Key="HeaderStyle">
+            <Style.Triggers>
+                <DataTrigger TargetType="components:HeaderComponent" Binding="{Binding Source={RelativeSource AncestorType={x:Type Grid}}, Path=Width}" Value="0">
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </ContentPage.Resources>
+</ContentPage> 
