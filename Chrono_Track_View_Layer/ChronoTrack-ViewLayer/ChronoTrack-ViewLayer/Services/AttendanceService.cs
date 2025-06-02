@@ -22,7 +22,7 @@ namespace ChronoTrack_ViewLayer.Services
             try
             {
                 _httpClient = HttpClientFactory.Client;
-                
+
                 // Configure JSON serialization options
                 _jsonOptions = new JsonSerializerOptions
                 {
@@ -47,7 +47,7 @@ namespace ChronoTrack_ViewLayer.Services
             {
                 _httpClient = HttpClientFactory.Client;
             }
-            
+
             // Any other setup logic can go here
             await Task.CompletedTask; // This ensures the method is truly async
         }
@@ -71,59 +71,59 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "User ID cannot be empty"
                 };
             }
-            
+
             HttpResponseMessage response = null;
-            
+
             try
             {
                 var apiUrl = $"{_baseUrl}/user/{userId}";
-                
+
                 // Add query parameters for date filtering and pagination
                 var queryParams = new List<string>();
-                
+
                 if (startDate.HasValue)
                 {
                     queryParams.Add($"startDate={startDate.Value:yyyy-MM-dd}");
                 }
-                
+
                 if (endDate.HasValue)
                 {
                     queryParams.Add($"endDate={endDate.Value:yyyy-MM-dd}");
                 }
-                
+
                 queryParams.Add($"page={page}");
                 queryParams.Add($"pageSize={pageSize}");
-                
+
                 if (queryParams.Any())
                 {
                     apiUrl += $"?{string.Join("&", queryParams)}";
                 }
-                
+
                 Console.WriteLine($"Calling API: GET {apiUrl}");
-                
+
                 response = await _httpClient.GetAsync(apiUrl);
                 Console.WriteLine($"Get attendance history API call response: {response.StatusCode}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Raw response: {responseContent}");
-                    
+
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
-                        
+
                         if (apiResponse != null)
                         {
                             Console.WriteLine($"Deserialized API response: Success={apiResponse.Success}, Message={apiResponse.Message ?? "null"}");
-                            
+
                             if (apiResponse.Success && apiResponse.Data != null)
                             {
                                 try
                                 {
                                     var resultJson = apiResponse.Data.ToString();
                                     Console.WriteLine($"PagedResponse<AttendanceDto> data JSON: {resultJson}");
-                                    
+
                                     var result = JsonSerializer.Deserialize<PagedResponse<AttendanceDto>>(resultJson, _jsonOptions);
                                     if (result != null)
                                     {
@@ -144,7 +144,7 @@ namespace ChronoTrack_ViewLayer.Services
                                     };
                                 }
                             }
-                            
+
                             return new ServiceResponse<PagedResponse<AttendanceDto>>
                             {
                                 Success = apiResponse.Success,
@@ -162,7 +162,7 @@ namespace ChronoTrack_ViewLayer.Services
                         };
                     }
                 }
-                
+
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Get attendance history API call failed: {response.StatusCode}, Error: {errorMessage}");
                 return new ServiceResponse<PagedResponse<AttendanceDto>>
@@ -201,45 +201,45 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "User ID cannot be empty"
                 };
             }
-            
+
             HttpResponseMessage response = null;
-            
+
             try
             {
                 await SetupHttpClientAsync();
-                
+
                 string apiUrl = $"{_baseUrl}/{userId}/checkin";
-                
+
                 var json = JsonSerializer.Serialize(command, _jsonOptions);
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
+
                 Console.WriteLine($"Calling API: POST {apiUrl}");
                 Console.WriteLine($"Request body: {json}");
-                
+
                 response = await _httpClient.PostAsync(apiUrl, content);
-                
+
                 Console.WriteLine($"Check-in API call response: {response.StatusCode}");
-                
+
                 var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Check-in API raw response: {responseContent}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
-                        
+
                         if (apiResponse != null)
                         {
                             Console.WriteLine($"Deserialized API response: Success={apiResponse.Success}, Message={apiResponse.Message ?? "null"}");
-                            
+
                             if (apiResponse.Success && apiResponse.Data != null)
                             {
                                 try
                                 {
                                     var resultJson = apiResponse.Data.ToString();
                                     Console.WriteLine($"AttendanceDto data JSON: {resultJson}");
-                                    
+
                                     var result = JsonSerializer.Deserialize<AttendanceDto>(resultJson, _jsonOptions);
                                     if (result != null)
                                     {
@@ -260,7 +260,7 @@ namespace ChronoTrack_ViewLayer.Services
                                     };
                                 }
                             }
-                            
+
                             return new ServiceResponse<AttendanceDto>
                             {
                                 Success = apiResponse.Success,
@@ -278,7 +278,7 @@ namespace ChronoTrack_ViewLayer.Services
                         };
                     }
                 }
-                
+
                 // Handle error responses from the API
                 string errorMessage = $"Failed to check in: {response.StatusCode}";
                 try
@@ -294,7 +294,7 @@ namespace ChronoTrack_ViewLayer.Services
                 {
                     Console.WriteLine($"Error parsing error response: {parseEx.Message}");
                 }
-                
+
                 return new ServiceResponse<AttendanceDto>
                 {
                     Success = false,
@@ -331,7 +331,7 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "User ID cannot be empty"
                 };
             }
-            
+
             if (string.IsNullOrEmpty(attendanceId))
             {
                 Console.WriteLine("CheckOutAsync error: Attendance ID is empty");
@@ -341,41 +341,41 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "Attendance ID cannot be empty"
                 };
             }
-            
+
             // Ensure the date is set in the command and it's in UTC
             command.AttendanceDate = DateTime.SpecifyKind(command.AttendanceDate.Date, DateTimeKind.Utc);
-            
+
             HttpResponseMessage response = null;
-            
+
             try
             {
                 var json = JsonSerializer.Serialize(command, _jsonOptions);
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
+
                 var apiUrl = $"{_baseUrl}/{userId}/checkout/{attendanceId}";
                 Console.WriteLine($"Calling API: PUT {apiUrl}");
                 Console.WriteLine($"Request body: {json}");
-                
+
                 response = await _httpClient.PutAsync(apiUrl, content);
-                
+
                 Console.WriteLine($"Check-out API call response: {response.StatusCode}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Raw response: {responseContent}");
-                    
+
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
-                        
+
                         if (apiResponse != null && apiResponse.Success && apiResponse.Data != null)
                         {
                             try
                             {
                                 var resultJson = apiResponse.Data.ToString();
                                 Console.WriteLine($"AttendanceDto data JSON: {resultJson}");
-                                
+
                                 var result = JsonSerializer.Deserialize<AttendanceDto>(resultJson, _jsonOptions);
                                 if (result != null)
                                 {
@@ -396,7 +396,7 @@ namespace ChronoTrack_ViewLayer.Services
                                 };
                             }
                         }
-                        
+
                         return new ServiceResponse<AttendanceDto>
                         {
                             Success = apiResponse?.Success ?? false,
@@ -413,7 +413,7 @@ namespace ChronoTrack_ViewLayer.Services
                         };
                     }
                 }
-                
+
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Check-out API call failed: {response.StatusCode}, Error: {errorMessage}");
                 return new ServiceResponse<AttendanceDto>
@@ -437,7 +437,7 @@ namespace ChronoTrack_ViewLayer.Services
                 response?.Dispose();
             }
         }
-        
+
         /// <summary>
         /// Auto check-out users who haven't checked out by midnight
         /// </summary>
@@ -447,7 +447,7 @@ namespace ChronoTrack_ViewLayer.Services
             {
                 // Get all users who are still checked in for yesterday
                 var historyResponse = await GetAllActiveAttendancesAsync();
-                
+
                 if (!historyResponse.Success || historyResponse.Data == null)
                 {
                     return new ServiceResponse<bool>
@@ -456,10 +456,10 @@ namespace ChronoTrack_ViewLayer.Services
                         Message = historyResponse.Message ?? "Failed to get active attendances"
                     };
                 }
-                
+
                 bool allSuccess = true;
                 string errorMessages = string.Empty;
-                
+
                 // Process each active attendance from yesterday
                 foreach (var attendance in historyResponse.Data)
                 {
@@ -467,11 +467,11 @@ namespace ChronoTrack_ViewLayer.Services
                     {
                         // Auto check-out with 9 hours after check-in time
                         var autoCheckOutTime = attendance.CheckInTime.Add(TimeSpan.FromHours(9));
-                        
+
                         // Create checkout data with date and time
                         var checkOutData = new UpdateAttendanceDto(attendance.AttendanceDate, autoCheckOutTime);
                         var json = JsonSerializer.Serialize(checkOutData, _jsonOptions);
-                        
+
                         using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
                         {
                             using (var response = await _httpClient.PutAsync($"{_baseUrl}/{attendance.UserId}/checkout", content))
@@ -492,7 +492,7 @@ namespace ChronoTrack_ViewLayer.Services
                         Console.WriteLine($"Error auto-checking out user {attendance.UserId}: {ex.Message}");
                     }
                 }
-                
+
                 return new ServiceResponse<bool>
                 {
                     Success = allSuccess,
@@ -511,18 +511,18 @@ namespace ChronoTrack_ViewLayer.Services
                 };
             }
         }
-        
+
         /// <summary>
         /// Gets all active attendances (users who haven't checked out)
         /// </summary>
         private async Task<ServiceResponse<List<AttendanceDto>>> GetAllActiveAttendancesAsync()
         {
             HttpResponseMessage response = null;
-            
+
             try
             {
                 response = await _httpClient.GetAsync($"{_baseUrl}/active");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonString = await response.Content.ReadAsStringAsync();
@@ -531,9 +531,9 @@ namespace ChronoTrack_ViewLayer.Services
                     {
                         try
                         {
-                        var resultJson = apiResponse.Data.ToString();
+                            var resultJson = apiResponse.Data.ToString();
                             var result = JsonSerializer.Deserialize<List<AttendanceDto>>(resultJson, _jsonOptions);
-                            
+
                             // Ensure all attendances have proper checkout time logic applied
                             if (result != null)
                             {
@@ -542,7 +542,7 @@ namespace ChronoTrack_ViewLayer.Services
                                     attendance.EnsureCheckOutTime();
                                 }
                             }
-                            
+
                             return new ServiceResponse<List<AttendanceDto>>(
                                 true,
                                 null,
@@ -557,13 +557,13 @@ namespace ChronoTrack_ViewLayer.Services
                                 null);
                         }
                     }
-                    
+
                     return new ServiceResponse<List<AttendanceDto>>(
                         true,
                         null,
                         new List<AttendanceDto>());
                 }
-                
+
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 return new ServiceResponse<List<AttendanceDto>>(
                     false,
@@ -598,29 +598,29 @@ namespace ChronoTrack_ViewLayer.Services
             try
             {
                 Console.WriteLine($"Getting all attendance records from {fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}, page={page}, pageSize={pageSize}");
-                
+
                 var apiUrl = $"{_baseUrl}?fromDate={fromDate:yyyy-MM-dd}&toDate={toDate:yyyy-MM-dd}&page={page}&pageSize={pageSize}";
                 Console.WriteLine($"Calling API: GET {apiUrl}");
-                
+
                 var response = await _httpClient.GetAsync(apiUrl);
                 Console.WriteLine($"GetAllAttendanceByDateRangeAsync API response: {response.StatusCode}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Raw API response: {content}");
-                    
+
                     try
                     {
                         var result = JsonSerializer.Deserialize<ApiResponse>(content, _jsonOptions);
-                        
+
                         if (result != null && result.Success && result.Data != null)
                         {
                             try
                             {
                                 var resultJson = result.Data.ToString();
                                 var attendanceData = JsonSerializer.Deserialize<PagedResponse<AttendanceDto>>(resultJson, _jsonOptions);
-                                
+
                                 if (attendanceData != null)
                                 {
                                     // Ensure all attendances have proper checkout time logic applied
@@ -628,7 +628,7 @@ namespace ChronoTrack_ViewLayer.Services
                                     {
                                         attendance.EnsureCheckOutTime();
                                     }
-                                    
+
                                     return new ServiceResponse<PagedResponse<AttendanceDto>>
                                     {
                                         Success = true,
@@ -646,7 +646,7 @@ namespace ChronoTrack_ViewLayer.Services
                                 };
                             }
                         }
-                        
+
                         return new ServiceResponse<PagedResponse<AttendanceDto>>
                         {
                             Success = result?.Success ?? false,
@@ -663,10 +663,10 @@ namespace ChronoTrack_ViewLayer.Services
                         };
                     }
                 }
-                
+
                 var errorContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"API error: {errorContent}");
-                
+
                 return new ServiceResponse<PagedResponse<AttendanceDto>>
                 {
                     Success = false,
@@ -677,7 +677,7 @@ namespace ChronoTrack_ViewLayer.Services
             {
                 Console.WriteLine($"Exception in GetAllAttendanceByDateRangeAsync: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                
+
                 return new ServiceResponse<PagedResponse<AttendanceDto>>
                 {
                     Success = false,
@@ -700,37 +700,37 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "User ID cannot be empty"
                 };
             }
-            
+
             HttpResponseMessage response = null;
-            
+
             try
             {
                 // Format dates for query parameters
                 var formattedStartDate = startDate.ToString("yyyy-MM-dd");
                 var formattedEndDate = endDate.ToString("yyyy-MM-dd");
-                
+
                 var apiUrl = $"{_baseUrl}/user/{userId}?startDate={formattedStartDate}&endDate={formattedEndDate}";
                 Console.WriteLine($"Calling API: GET {apiUrl}");
-                
+
                 response = await _httpClient.GetAsync(apiUrl);
                 Console.WriteLine($"Get attendance by user ID API call response: {response.StatusCode}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Raw response: {responseContent}");
-                    
+
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
-                        
+
                         if (apiResponse != null && apiResponse.Success && apiResponse.Data != null)
                         {
                             try
                             {
                                 var resultJson = apiResponse.Data.ToString();
                                 Console.WriteLine($"PagedResponse<AttendanceDto> data JSON: {resultJson}");
-                                
+
                                 // First, deserialize to PagedResponse
                                 var pagedResponse = JsonSerializer.Deserialize<PagedResponse<AttendanceDto>>(resultJson, _jsonOptions);
                                 if (pagedResponse != null && pagedResponse.Items != null)
@@ -753,7 +753,7 @@ namespace ChronoTrack_ViewLayer.Services
                                 };
                             }
                         }
-                        
+
                         return new ServiceResponse<List<AttendanceDto>>
                         {
                             Success = apiResponse?.Success ?? false,
@@ -770,7 +770,7 @@ namespace ChronoTrack_ViewLayer.Services
                         };
                     }
                 }
-                
+
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Get attendance by user ID API call failed: {response.StatusCode}, Error: {errorMessage}");
                 return new ServiceResponse<List<AttendanceDto>>
@@ -799,76 +799,76 @@ namespace ChronoTrack_ViewLayer.Services
         /// Gets detailed attendance information with various filtering options
         /// </summary>
         public async Task<ServiceResponse<PagedResponse<DetailedAttendanceDto>>> GetDetailedAttendanceAsync(
-            string userId = null, 
-            string attendanceId = null, 
-            string employeeName = null, 
-            DateTime? startDate = null, 
-            DateTime? endDate = null, 
-            int page = 1, 
+            string userId = null,
+            string attendanceId = null,
+            string employeeName = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            int page = 1,
             int pageSize = 10)
         {
             try
             {
                 await SetupHttpClientAsync();
-                
+
                 // Build query string with parameters
                 var queryParams = new List<string>();
-                
+
                 if (!string.IsNullOrEmpty(userId))
                     queryParams.Add($"userId={Uri.EscapeDataString(userId)}");
-                
+
                 if (!string.IsNullOrEmpty(attendanceId))
                     queryParams.Add($"attendanceId={Uri.EscapeDataString(attendanceId)}");
-                
+
                 if (!string.IsNullOrEmpty(employeeName))
                     queryParams.Add($"employeeName={Uri.EscapeDataString(employeeName)}");
-                
+
                 if (startDate.HasValue)
                     queryParams.Add($"startDate={startDate.Value.ToString("yyyy-MM-ddTHH:mm:ss")}");
-                
+
                 if (endDate.HasValue)
                     queryParams.Add($"endDate={endDate.Value.ToString("yyyy-MM-ddTHH:mm:ss")}");
-                
+
                 queryParams.Add($"page={page}");
                 queryParams.Add($"pageSize={pageSize}");
-                
+
                 string queryString = string.Join("&", queryParams);
-                
+
                 // Construct the URL
                 string apiUrl = $"{_baseUrl}/detailed?{queryString}";
-                
+
                 // Log the request for debugging
                 Console.WriteLine($"GetDetailedAttendanceAsync - Requesting: {apiUrl}");
-                
+
                 var response = await _httpClient.GetAsync(apiUrl);
-                
+
                 // Always read the response content for error details
                 string responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"GetDetailedAttendanceAsync - Response status: {response.StatusCode}");
                 Console.WriteLine($"GetDetailedAttendanceAsync - Response content: {responseContent}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     // Deserialize successful response
                     var apiResponse = JsonSerializer.Deserialize<ApiResponse<PagedResponse<DetailedAttendanceDto>>>(
                         responseContent, _jsonOptions);
-                    
+
                     if (apiResponse == null)
                     {
                         return new ServiceResponse<PagedResponse<DetailedAttendanceDto>>(
                             false, "Failed to deserialize API response", null);
                     }
-                    
+
                     return new ServiceResponse<PagedResponse<DetailedAttendanceDto>>(
-                        apiResponse.Success, 
-                        apiResponse.Message, 
+                        apiResponse.Success,
+                        apiResponse.Message,
                         apiResponse.Data);
                 }
                 else
                 {
                     // Try to extract error message from response content
                     string errorMessage = "API request failed";
-                    
+
                     try
                     {
                         // Attempt to deserialize error response
@@ -883,7 +883,7 @@ namespace ChronoTrack_ViewLayer.Services
                         // If we can't deserialize the error, use the status code
                         errorMessage = $"API request failed with status code {(int)response.StatusCode}: {response.ReasonPhrase}";
                     }
-                    
+
                     return new ServiceResponse<PagedResponse<DetailedAttendanceDto>>(
                         false, errorMessage, null);
                 }
@@ -920,29 +920,29 @@ namespace ChronoTrack_ViewLayer.Services
                     Message = "User ID cannot be empty"
                 };
             }
-            
+
             try
             {
                 await SetupHttpClientAsync();
-                
+
                 var apiUrl = $"{_baseUrl}/{userId}/checkin-checkout-status";
                 Console.WriteLine($"Calling API: GET {apiUrl}");
-                
+
                 var response = await _httpClient.GetAsync(apiUrl);
                 Console.WriteLine($"Get check-in/check-out status API call response: {response.StatusCode}");
-                
+
                 var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"GetCheckInCheckOutStatusAsync raw response: {responseContent}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse<CheckInCheckOutStatusDto>>(
-                            responseContent, 
+                            responseContent,
                             _jsonOptions
                         );
-                        
+
                         if (apiResponse == null)
                         {
                             Console.WriteLine("Failed to deserialize API response - null result");
@@ -952,7 +952,7 @@ namespace ChronoTrack_ViewLayer.Services
                                 Message = "Failed to parse API response"
                             };
                         }
-                        
+
                         if (apiResponse.Data == null)
                         {
                             Console.WriteLine("API response data is null");
@@ -962,9 +962,9 @@ namespace ChronoTrack_ViewLayer.Services
                                 Message = apiResponse.Message ?? "No status data returned from API"
                             };
                         }
-                        
+
                         Console.WriteLine($"Status parsed successfully: IsCheckedIn={apiResponse.Data.IsCheckedIn}, UserId={apiResponse.Data.UserId}, AttendanceId={apiResponse.Data.CurrentAttendanceId}");
-                        
+
                         return new ServiceResponse<CheckInCheckOutStatusDto>
                         {
                             Success = apiResponse.Success,
@@ -986,10 +986,10 @@ namespace ChronoTrack_ViewLayer.Services
                 else
                 {
                     Console.WriteLine($"GetCheckInCheckOutStatusAsync error: {response.StatusCode}");
-                    
+
                     // Try to extract error message from response content
                     string errorMessage = $"API error: {response.StatusCode}";
-                    
+
                     try
                     {
                         var errorResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
@@ -1002,7 +1002,7 @@ namespace ChronoTrack_ViewLayer.Services
                     {
                         // If we can't parse the error response, use the default message
                     }
-                    
+
                     return new ServiceResponse<CheckInCheckOutStatusDto>
                     {
                         Success = false,
@@ -1037,25 +1037,25 @@ namespace ChronoTrack_ViewLayer.Services
             try
             {
                 await SetupHttpClientAsync();
-                
+
                 string apiUrl = $"{_baseUrl}/today-stats";
                 Console.WriteLine($"Calling API: GET {apiUrl}");
-                
+
                 HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
                 string responseContent = await response.Content.ReadAsStringAsync();
-                
+
                 Console.WriteLine($"GetTodayAttendanceStatsAsync - Response status: {response.StatusCode}");
                 Console.WriteLine($"GetTodayAttendanceStatsAsync - Response content: {responseContent}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     try
                     {
                         var apiResponse = JsonSerializer.Deserialize<ApiResponse<AttendanceStatsDto>>(
-                            responseContent, 
+                            responseContent,
                             _jsonOptions
                         );
-                        
+
                         if (apiResponse == null)
                         {
                             Console.WriteLine("Failed to deserialize attendance stats API response - null result");
@@ -1065,7 +1065,7 @@ namespace ChronoTrack_ViewLayer.Services
                                 Message = "Failed to parse attendance statistics"
                             };
                         }
-                        
+
                         if (apiResponse.Data == null)
                         {
                             Console.WriteLine("API attendance stats response data is null");
@@ -1075,9 +1075,9 @@ namespace ChronoTrack_ViewLayer.Services
                                 Message = apiResponse.Message ?? "No attendance statistics data returned from API"
                             };
                         }
-                        
+
                         Console.WriteLine($"Attendance stats parsed successfully. Total: {apiResponse.Data.TotalEmployees}, Arrived: {apiResponse.Data.TotalArrived}, OnTime: {apiResponse.Data.OnTime}, Late: {apiResponse.Data.LateArrivals}");
-                        
+
                         return new ServiceResponse<AttendanceStatsDto>
                         {
                             Success = apiResponse.Success,
@@ -1099,10 +1099,10 @@ namespace ChronoTrack_ViewLayer.Services
                 else
                 {
                     Console.WriteLine($"GetTodayAttendanceStatsAsync error: {response.StatusCode}");
-                    
+
                     // Try to extract error message from response content
                     string errorMessage = "Failed to retrieve attendance statistics";
-                    
+
                     try
                     {
                         var errorResponse = JsonSerializer.Deserialize<ApiResponse>(responseContent, _jsonOptions);
@@ -1115,7 +1115,7 @@ namespace ChronoTrack_ViewLayer.Services
                     {
                         Console.WriteLine($"Error parsing error response: {ex.Message}");
                     }
-                    
+
                     return new ServiceResponse<AttendanceStatsDto>
                     {
                         Success = false,
@@ -1127,7 +1127,7 @@ namespace ChronoTrack_ViewLayer.Services
             {
                 Console.WriteLine($"Exception in GetTodayAttendanceStatsAsync: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                
+
                 return new ServiceResponse<AttendanceStatsDto>
                 {
                     Success = false,
@@ -1155,7 +1155,7 @@ namespace ChronoTrack_ViewLayer.Services
             Data = data;
         }
     }
-    
+
     public class ApiResponse
     {
         public bool Success { get; set; }
