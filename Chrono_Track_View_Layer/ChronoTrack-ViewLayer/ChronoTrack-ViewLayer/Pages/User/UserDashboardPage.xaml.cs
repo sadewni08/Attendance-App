@@ -55,7 +55,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 InitializeComponent();
                 AttendanceHistoryList.ItemsSource = _attendanceHistory;
                 _attendanceService = new AttendanceService();
-                
+
                 // Get the current logged-in user ID from preferences
                 _currentUserId = Preferences.Get("UserId", string.Empty);
                 if (string.IsNullOrEmpty(_currentUserId))
@@ -68,7 +68,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         Console.WriteLine($"Using user name as fallback: {userName}");
                         // If needed, we could lookup the userId from the userName here
                     }
-                    
+
                     // For testing purposes, use a default user ID if nothing is available
                     if (string.IsNullOrEmpty(_currentUserId))
                     {
@@ -80,7 +80,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 {
                     Console.WriteLine($"Current user ID: {_currentUserId}");
                 }
-                
+
                 SetupEventHandlers();
                 UpdateTimeAndDate();
             }
@@ -216,7 +216,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 {
                     userId = _currentUserId; // Fallback to the stored ID
                 }
-                
+
                 if (string.IsNullOrEmpty(userId))
                 {
                     Console.WriteLine("Error: User ID not found during CheckAttendanceStatusAsync");
@@ -227,25 +227,25 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     }
                     return;
                 }
-                
+
                 Console.WriteLine($"CheckAttendanceStatusAsync: Checking status for user ID: {userId}");
-                
+
                 // Update the stored user ID
                 _currentUserId = userId;
-                
+
                 // Show loading indicator or message
                 if (WorkStatusMessage != null)
                 {
                     WorkStatusMessage.Text = "Checking attendance status...";
                     WorkStatusMessage.IsVisible = true;
                 }
-                
+
                 // Ensure the checkout button is always visible
                 if (CheckOutButton != null)
                 {
                     CheckOutButton.IsVisible = true;
                 }
-                
+
                 // Get current date for date range filtering
                 var today = DateTime.UtcNow.Date;
                 var startDate = today.AddDays(-7); // Get last week's attendance for recent activity
@@ -259,9 +259,9 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     1,                 // First page
                     10                 // Up to 10 records
                 );
-                
+
                 Console.WriteLine($"GetUserAttendanceHistoryAsync result: Success={historyResult.Success}, Message={historyResult.Message ?? "null"}");
-                
+
                 // Update recent activity list regardless of status check
                 if (historyResult.Success && historyResult.Data?.Items != null)
                 {
@@ -282,26 +282,26 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         _attendanceHistory.Add(item);
                     }
                 }
-                
+
                 // Now call the dedicated check-in/check-out status API
                 Console.WriteLine("Calling GetCheckInCheckOutStatusAsync...");
                 var statusResult = await _attendanceService.GetCheckInCheckOutStatusAsync(userId);
-                
+
                 Console.WriteLine($"GetCheckInCheckOutStatusAsync result: Success={statusResult.Success}, Message={statusResult.Message ?? "null"}");
-                
+
                 if (!_isPageActive) return;
 
                 if (statusResult.Success && statusResult.Data != null)
                 {
                     var status = statusResult.Data;
                     Console.WriteLine($"Status: IsCheckedIn={status.IsCheckedIn}, IsCheckedOut={status.IsCheckedOut}, AttendanceId={status.CurrentAttendanceId}");
-                    
+
                     _isCheckedIn = status.IsCheckedIn;
                     _currentAttendanceId = status.CurrentAttendanceId;
 
                     // Get button states from the status
                     var (checkInEnabled, checkOutEnabled, checkInVisible, checkOutVisible) = status.GetButtonStates();
-                    
+
                     // Update button states
                     if (CheckInButton != null)
                     {
@@ -346,7 +346,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         AttendanceStatusBadge.Text = badgeText;
                         AttendanceStatusBadge.TextColor = Color.FromArgb(textColor);
                         badge.BackgroundColor = Color.FromArgb(bgColor);
-                        
+
                         Console.WriteLine($"Updated status badge: Text={badgeText}, Actual Status={status.Status}");
                     }
 
@@ -378,17 +378,17 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         {
                             // Calculate duration
                             TimeSpan duration = status.Duration ?? TimeSpan.Zero;
-                            string durationText = duration.Hours > 0 
-                                ? $"{duration.Hours} hours and {duration.Minutes} minutes" 
+                            string durationText = duration.Hours > 0
+                                ? $"{duration.Hours} hours and {duration.Minutes} minutes"
                                 : $"{duration.Minutes} minutes";
-                                
+
                             WorkStatusMessage.Text = $"Work session closed. Today's work duration: {durationText}";
                         }
                         else
                         {
                             WorkStatusMessage.Text = "You haven't checked in today";
                         }
-                        
+
                         WorkStatusMessage.IsVisible = true;
                     }
 
@@ -452,7 +452,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         WorkStatusMessage.Text = "Could not retrieve attendance status";
                         WorkStatusMessage.IsVisible = true;
                     }
-                    
+
                     // Hide check-in time label
                     if (CheckInTimeLabel != null)
                     {
@@ -464,7 +464,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
             {
                 Console.WriteLine($"Error in CheckAttendanceStatusAsync: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
-                
+
                 if (WorkStatusMessage != null)
                 {
                     WorkStatusMessage.Text = "Error checking attendance status";
@@ -491,7 +491,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
 
                 // Disable check-in button during API call
                 if (CheckInButton != null) CheckInButton.IsEnabled = false;
-                if (CheckOutButton != null) 
+                if (CheckOutButton != null)
                 {
                     CheckOutButton.IsVisible = true;
                     CheckOutButton.IsEnabled = false;
@@ -517,10 +517,10 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 }
 
                 Console.WriteLine($"Checking in user: {userId}");
-                
+
                 // Use the new CreateWithLocalTime method to ensure the date is handled properly for Sri Lanka time zone
                 var checkInDto = CreateAttendanceDto.CreateWithLocalTime();
-                
+
                 // Call the API to check in
                 var result = await _attendanceService.CheckInAsync(userId, checkInDto);
 
@@ -556,7 +556,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     }
 
                     // Update button states - enable checkout, disable check-in
-                    if (CheckInButton != null) 
+                    if (CheckInButton != null)
                     {
                         CheckInButton.IsEnabled = false;
                         CheckInButton.IsVisible = false;
@@ -579,24 +579,24 @@ namespace ChronoTrack_ViewLayer.Pages.User
 
                     if (_isPageActive)
                     {
-                        await DisplayAlert("Check In Successful", 
-                            $"You have been checked in at {result.Data.FormattedCheckInTime}. Your status is now Active.", 
+                        await DisplayAlert("Check In Successful",
+                            $"You have been checked in at {result.Data.FormattedCheckInTime}. Your status is now Active.",
                             "OK");
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Check-in failed: {result.Message}");
-                    
+
                     // Re-enable check-in button
                     if (CheckInButton != null) CheckInButton.IsEnabled = true;
-                    
+
                     // Update work status message
                     if (WorkStatusMessage != null)
                     {
                         WorkStatusMessage.Text = "Check in failed. Please try again.";
                     }
-                    
+
                     if (_isPageActive)
                     {
                         await DisplayAlert("Check In Failed", result.Message ?? "Failed to check in. Please try again.", "OK");
@@ -608,14 +608,14 @@ namespace ChronoTrack_ViewLayer.Pages.User
             {
                 Console.WriteLine($"Error during check-in: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                
+
                 if (CheckInButton != null) CheckInButton.IsEnabled = true;
-                
+
                 if (WorkStatusMessage != null)
                 {
                     WorkStatusMessage.Text = "Error during check in. Please try again.";
                 }
-                
+
                 if (_isPageActive)
                 {
                     await DisplayAlert("Error", "An error occurred during check-in. Please try again.", "OK");
@@ -654,7 +654,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         WorkStatusMessage.Text = "Error: User ID not found";
                     }
                     if (CheckOutButton != null) CheckOutButton.IsEnabled = true;
-                    
+
                     if (_isPageActive)
                     {
                         await DisplayAlert("Error", "User ID not found. Please log in again.", "OK");
@@ -665,7 +665,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 // Get current attendance status to ensure we have the correct attendance ID
                 Console.WriteLine("Getting current check-in/check-out status before checkout");
                 var statusResult = await _attendanceService.GetCheckInCheckOutStatusAsync(userId);
-                
+
                 if (!statusResult.Success || statusResult.Data == null || !statusResult.Data.IsCheckedIn)
                 {
                     Console.WriteLine("Cannot check-out: User is not checked in or status check failed");
@@ -674,7 +674,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         WorkStatusMessage.Text = "Error: You need to check in first";
                     }
                     if (CheckOutButton != null) CheckOutButton.IsEnabled = true;
-                    
+
                     if (_isPageActive)
                     {
                         await DisplayAlert("Not Checked In", "You need to check in first before checking out.", "OK");
@@ -682,7 +682,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     }
                     return;
                 }
-                
+
                 // If already checked out
                 if (statusResult.Data.IsCheckedOut)
                 {
@@ -691,19 +691,19 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     {
                         WorkStatusMessage.Text = "You have already checked out today";
                     }
-                    
+
                     if (_isPageActive)
                     {
-                        await DisplayAlert("Already Checked Out", 
+                        await DisplayAlert("Already Checked Out",
                             $"You are already checked out for today.", "OK");
                         await CheckAttendanceStatusAsync();
                     }
                     return;
                 }
-                
+
                 // Get the attendance ID from the status
                 string attendanceId = statusResult.Data.CurrentAttendanceId;
-                
+
                 // Check if attendance ID is valid
                 if (string.IsNullOrEmpty(attendanceId))
                 {
@@ -713,7 +713,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                         WorkStatusMessage.Text = "Error: Attendance record not found";
                     }
                     if (CheckOutButton != null) CheckOutButton.IsEnabled = true;
-                    
+
                     if (_isPageActive)
                     {
                         await DisplayAlert("Error", "Attendance record not found. Please refresh the page.", "OK");
@@ -721,13 +721,13 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     }
                     return;
                 }
-                
+
                 // Extract the attendance date from the status response for proper checkout
                 var checkoutAttendanceDate = DateTime.Today; // Default as a fallback
-                
+
                 // Create the check-out DTO using local time for proper timezone handling
                 var checkoutDto = UpdateAttendanceDto.CreateWithLocalTime(checkoutAttendanceDate);
-                
+
                 Console.WriteLine($"Checking out user: {userId}, attendance ID: {attendanceId}");
                 var result = await _attendanceService.CheckOutAsync(userId, attendanceId, checkoutDto);
 
@@ -754,12 +754,12 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     }
 
                     // Update button states - disable both buttons since work is completed for the day
-                    if (CheckInButton != null) 
+                    if (CheckInButton != null)
                     {
                         CheckInButton.IsEnabled = false;
                         CheckInButton.IsVisible = false;
                     }
-                    if (CheckOutButton != null) 
+                    if (CheckOutButton != null)
                     {
                         CheckOutButton.IsEnabled = false;
                         CheckOutButton.IsVisible = true;
@@ -767,8 +767,8 @@ namespace ChronoTrack_ViewLayer.Pages.User
 
                     // Calculate duration for work status message
                     TimeSpan duration = result.Data.Duration;
-                    string durationText = duration.Hours > 0 
-                        ? $"{duration.Hours} hours and {duration.Minutes} minutes" 
+                    string durationText = duration.Hours > 0
+                        ? $"{duration.Hours} hours and {duration.Minutes} minutes"
                         : $"{duration.Minutes} minutes";
 
                     // Update work status message
@@ -790,22 +790,22 @@ namespace ChronoTrack_ViewLayer.Pages.User
 
                     if (_isPageActive)
                     {
-                        await DisplayAlert("Check Out Successful", 
-                            $"You have been checked out at {result.Data.FormattedCheckOutTime}.\nTotal duration: {durationText}\nYour work status is now Closed for today.", 
+                        await DisplayAlert("Check Out Successful",
+                            $"You have been checked out at {result.Data.FormattedCheckOutTime}.\nTotal duration: {durationText}\nYour work status is now Closed for today.",
                             "OK");
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Check-out failed: {result.Message}");
-                    
+
                     if (CheckOutButton != null) CheckOutButton.IsEnabled = true;
-                    
+
                     if (WorkStatusMessage != null)
                     {
                         WorkStatusMessage.Text = "Check out failed. Please try again.";
                     }
-                    
+
                     if (_isPageActive)
                     {
                         await DisplayAlert("Check Out Failed", result.Message ?? "Failed to check out. Please try again.", "OK");
@@ -817,14 +817,14 @@ namespace ChronoTrack_ViewLayer.Pages.User
             {
                 Console.WriteLine($"Error during check-out: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                
+
                 if (CheckOutButton != null) CheckOutButton.IsEnabled = true;
-                
+
                 if (WorkStatusMessage != null)
                 {
                     WorkStatusMessage.Text = "Error during check out. Please try again.";
                 }
-                
+
                 if (_isPageActive)
                 {
                     await DisplayAlert("Error", "An error occurred during check-out. Please try again.", "OK");
@@ -842,9 +842,9 @@ namespace ChronoTrack_ViewLayer.Pages.User
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            
+
             _isPageActive = false;
-            
+
             // Stop the timer to prevent memory leaks
             if (timer != null)
             {
@@ -853,14 +853,14 @@ namespace ChronoTrack_ViewLayer.Pages.User
                 timer.Dispose();
                 timer = null;
             }
-            
+
             // Unsubscribe from events
             var header = this.FindByName<Components.HeaderComponent>("HeaderComponent");
             if (header != null)
             {
                 header.LogoutRequested -= OnHeaderLogoutRequested;
             }
-            
+
             // Clean up button event handlers if needed
             if (this.FindByName<Button>("ViewHistoryButton") is Button viewHistoryButton)
             {
@@ -876,10 +876,10 @@ namespace ChronoTrack_ViewLayer.Pages.User
             {
                 checkOutButton.Clicked -= OnCheckOutClicked;
             }
-            
+
             // Explicitly clear collections
             _attendanceHistory.Clear();
-            
+
             // Force GC collection
             GC.Collect();
         }
@@ -889,33 +889,33 @@ namespace ChronoTrack_ViewLayer.Pages.User
             try
             {
                 base.OnAppearing();
-                
+
                 _isPageActive = true;
-                
+
                 // Start the timer
                 if (timer != null && !timer.Enabled)
                 {
                     timer.Start();
                 }
-                
+
                 // Update time and date
                 UpdateTimeAndDate();
-                
+
                 // Ensure the CheckOut button is always visible
                 if (CheckOutButton != null)
                 {
                     CheckOutButton.IsVisible = true;
                 }
-                
+
                 // Refresh attendance status when page appears
                 Console.WriteLine("OnAppearing: Refreshing attendance status");
                 await CheckAttendanceStatusAsync();
-                
+
                 if (!_isPageActive)
                 {
                     return;
                 }
-                
+
                 // Check if it's a new day since last check-out
                 // This ensures the auto check-out logic is triggered
                 if (_isCheckedIn && !string.IsNullOrEmpty(_currentAttendanceId))
@@ -924,7 +924,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
                     if (todayAttendance != null)
                     {
                         var isCheckedOut = todayAttendance.CheckOutTime != TimeSpan.Zero;
-                        
+
                         // If auto check-out was applied, reflect it in the UI
                         if (isCheckedOut && todayAttendance.AttendanceDate.Date < DateTime.Now.Date)
                         {
@@ -933,41 +933,41 @@ namespace ChronoTrack_ViewLayer.Pages.User
                             {
                                 AttendanceStatusLabel.Text = "You have been automatically checked out";
                             }
-                            
+
                             if (AttendanceStatusBadge != null && AttendanceStatusBadge.Parent is Border badge)
                             {
                                 AttendanceStatusBadge.Text = "Closed";
                                 AttendanceStatusBadge.TextColor = Color.FromArgb("#1E40AF"); // Dark blue
                                 badge.BackgroundColor = Color.FromArgb("#DBEAFE"); // Light blue
                             }
-                            
+
                             // Disable check-out button but keep it visible
-                            if (CheckOutButton != null) 
+                            if (CheckOutButton != null)
                             {
                                 CheckOutButton.IsEnabled = false;
                                 CheckOutButton.IsVisible = true;
                             }
                             if (CheckInButton != null) CheckInButton.IsEnabled = false;
-                            
+
                             // Calculate and show duration in work status message
                             TimeSpan duration = todayAttendance.Duration;
-                            string durationText = duration.Hours > 0 
-                                ? $"{duration.Hours} hours and {duration.Minutes} minutes" 
+                            string durationText = duration.Hours > 0
+                                ? $"{duration.Hours} hours and {duration.Minutes} minutes"
                                 : $"{duration.Minutes} minutes";
-                                
+
                             if (WorkStatusMessage != null)
                             {
                                 WorkStatusMessage.Text = $"Auto check-out applied: {durationText} total work duration";
                                 WorkStatusMessage.IsVisible = true;
                             }
-                            
+
                             if (_isPageActive)
                             {
                                 // Show a notification about the auto check-out
-                                await DisplayAlert("Auto Check-Out", 
-                                    $"You have been automatically checked out at 9 hours after your check-in time, as you didn't check out before midnight.\nTotal duration: {durationText}\nYour work status is now Closed.", 
+                                await DisplayAlert("Auto Check-Out",
+                                    $"You have been automatically checked out at 9 hours after your check-in time, as you didn't check out before midnight.\nTotal duration: {durationText}\nYour work status is now Closed.",
                                     "OK");
-                                
+
                                 // Refresh attendance history again to ensure UI is updated
                                 await CheckAttendanceStatusAsync();
                             }
@@ -989,4 +989,4 @@ namespace ChronoTrack_ViewLayer.Pages.User
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-} 
+}
