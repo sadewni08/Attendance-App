@@ -44,7 +44,7 @@
                                        TextColor="#111827"
                                        VerticalOptions="Center"
                                        x:Name="MainTitleLabel"/>
-                                
+
                                 <Border Grid.Column="1" Padding="12,8" StrokeShape="RoundRectangle 6" BackgroundColor="#F3F4F6">
                                     <HorizontalStackLayout Spacing="8">
                                         <Image Source="calendar.png" WidthRequest="16" HeightRequest="16" />
@@ -145,49 +145,49 @@
                                             <Grid ColumnDefinitions="1.5*,1.5*,0.8*,1.2*,1*,1*,1.5*" 
                                                   Padding="24,16" 
                                                   BackgroundColor="{Binding IsEvenRow, Converter={StaticResource BoolToColorConverter}}">
-                                                
+
                                                 <Label Grid.Column="0" 
                                                        Text="{Binding AttendanceId}" 
                                                        TextColor="#111827" 
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Label Grid.Column="1" 
                                                        Text="{Binding FormattedDate}" 
                                                        TextColor="#111827" 
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Label Grid.Column="2" 
                                                        Text="{Binding Day}" 
                                                        TextColor="#111827" 
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Label Grid.Column="3" 
                                                        Text="{Binding FormattedCheckInTime}" 
                                                        TextColor="#111827" 
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Label Grid.Column="4"
                                                        Text="{Binding FormattedCheckOutTime}"
                                                        TextColor="#111827"
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Label Grid.Column="5"
                                                        Text="{Binding FormattedDuration}"
                                                        TextColor="#111827"
                                                        FontSize="14"
                                                        LineBreakMode="NoWrap"
                                                        VerticalOptions="Center"/>
-                                                
+
                                                 <Border Grid.Column="6"
                                                         StrokeShape="RoundRectangle 6"
                                                         Padding="12,4"
@@ -212,7 +212,7 @@
                                   Padding="24,16"
                                   BackgroundColor="#F9FAFB"
                                   RowDefinitions="Auto,Auto">
-                                
+
                                 <!-- Pagination Info -->
                                 <HorizontalStackLayout Grid.Row="0"
                                                      HorizontalOptions="Center"
@@ -294,7 +294,7 @@
     <ContentPage.Resources>
         <!-- Status Color Converter -->
         <converters:StatusColorConverter x:Key="StatusColorConverter" />
-        
+
         <!-- Bool to Color Converter -->
         <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
 
