@@ -41,11 +41,13 @@
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    Opacity="0.5"
+                               
                                    SemanticProperties.Description="Search icon"/>
                             <Entry Placeholder="Quick Search..."
                                    Grid.Column="1"
                                    PlaceholderColor="#9CA3AF"
-                                   BackgroundColor="Transparent"/>
+                                   BackgroundColor="Transparent"
+                                   TextColor="Black" />
                         </Grid>
                     </Border>
 
