@@ -5,12 +5,13 @@
              x:Class="ChronoTrack_ViewLayer.Components.HeaderComponent"
              HeightRequest="80">
     <AbsoluteLayout>
+
         <!-- Fixed Header Container -->
         <Grid 
             AbsoluteLayout.LayoutBounds="0,0,1,80" 
             AbsoluteLayout.LayoutFlags="WidthProportional"
             RowDefinitions="80">
-            
+
             <!-- Desktop Header -->
             <Border x:Name="DesktopHeader"
                     Stroke="Transparent"
@@ -94,7 +95,7 @@
                                 </Image.GestureRecognizers>
                             </Image>
                         </Border>
-                        
+
                         <Grid>
                             <HorizontalStackLayout Spacing="8">
                                 <Border x:Name="ProfileBorder"
@@ -133,7 +134,7 @@
             <!-- Mobile Header -->
             <components:MobileHeaderComponent x:Name="MobileHeader" ZIndex="1"/>
         </Grid>
-        
+
         <!-- Profile Menu Popup - Positioned directly -->
         <Border x:Name="ProfileMenuPopup"
                 IsVisible="False"
@@ -161,7 +162,7 @@
                         ImageSource="logout.png"/>
             </VerticalStackLayout>
         </Border>
-        
+
         <!-- Popup overlay - for closing popups by clicking outside them -->
         <Grid x:Name="PopupOverlay"
               IsVisible="False"
@@ -174,7 +175,7 @@
                 <TapGestureRecognizer Tapped="OnPopupOverlayTapped"/>
             </Grid.GestureRecognizers>
         </Grid>
-        
+
         <!-- Calendar Popup -->
         <components:CalendarPopupComponent x:Name="CalendarPopupComponent"
                                           IsVisible="False"
@@ -182,7 +183,7 @@
                                           AbsoluteLayout.LayoutFlags="PositionProportional"
                                           Margin="0,0,120,0"
                                           ZIndex="-1" />
-        
+
         <!-- Notifications Popup -->
         <components:NotificationsPopupComponent x:Name="NotificationsPopupComponent"
                                                IsVisible="False"
