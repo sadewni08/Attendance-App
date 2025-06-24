@@ -23,10 +23,10 @@ namespace ChronoTrack_ViewLayer.Components
     {
         // Event to notify parent pages when calendar is clicked
         public event EventHandler CalendarClicked;
-        
+
         // Event to notify parent pages when notifications are clicked
         public event EventHandler NotificationsClicked;
-        
+
         // Event to notify parent pages when menu is clicked
         public event EventHandler MenuClicked;
 
@@ -43,11 +43,11 @@ namespace ChronoTrack_ViewLayer.Components
         public HeaderComponent()
         {
             InitializeComponent();
-            
+
             SetupCommands();
             SetupMobileHeader();
             SetupPopupComponents();
-            
+
             // Set profile information based on logged in user
             SetUserProfile();
         }
@@ -56,21 +56,21 @@ namespace ChronoTrack_ViewLayer.Components
         {
             // Add direct debug logging
             Console.WriteLine("Setting up HeaderComponent commands");
-            
-            CalendarCommand = new Command(() => 
+
+            CalendarCommand = new Command(() =>
             {
                 Console.WriteLine("CalendarCommand executed");
                 CalendarClicked?.Invoke(this, EventArgs.Empty);
             });
-            
-            NotificationsCommand = new Command(() => 
+
+            NotificationsCommand = new Command(() =>
             {
                 Console.WriteLine("NotificationsCommand executed");
                 NotificationsClicked?.Invoke(this, EventArgs.Empty);
             });
-            
+
             BindingContext = this;
-            
+
             // Set up tap event handlers after Loaded event
             Loaded += HeaderComponent_Loaded;
         }
@@ -87,7 +87,7 @@ namespace ChronoTrack_ViewLayer.Components
                 _mobileHeader.LogoutRequested += OnMobileLogoutRequested;
             }
         }
-        
+
         private void SetupPopupComponents()
         {
             // Wire up calendar popup events
@@ -97,12 +97,12 @@ namespace ChronoTrack_ViewLayer.Components
                     Console.WriteLine($"Date selected: {date:MM/dd/yyyy}");
                     CloseAllPopups();
                 };
-                
+
                 CalendarPopupComponent.CloseRequested += (s, e) => {
                     CloseAllPopups();
                 };
             }
-            
+
             // Wire up notifications popup events
             if (NotificationsPopupComponent != null)
             {
@@ -112,7 +112,7 @@ namespace ChronoTrack_ViewLayer.Components
                     // or implement alternative behavior without needing the NotificationsPage
                     try
                     {
-                        Application.Current.MainPage.DisplayAlert("Notifications", 
+                        Application.Current.MainPage.DisplayAlert("Notifications",
                             "Viewing all notifications in the current view.", "OK");
                     }
                     catch (Exception ex)
@@ -120,7 +120,7 @@ namespace ChronoTrack_ViewLayer.Components
                         Console.WriteLine($"Error displaying alert: {ex.Message}");
                     }
                 };
-                
+
                 NotificationsPopupComponent.CloseRequested += (s, e) => {
                     CloseAllPopups();
                 };
@@ -135,47 +135,47 @@ namespace ChronoTrack_ViewLayer.Components
         private void HeaderComponent_Loaded(object sender, EventArgs e)
         {
             Console.WriteLine("HeaderComponent loaded");
-            
+
             // Set up mobile header events again if needed
             if (_mobileHeader != null)
             {
                 _mobileHeader.MenuClicked += (s, e) => MenuClicked?.Invoke(this, e);
                 _mobileHeader.ProfileClicked += (s, e) => ProfileClicked?.Invoke(this, e);
             }
-            
+
             // Find and set up calendar border tap gesture
             if (CalendarBorder != null)
             {
                 Console.WriteLine("Setting up calendar border tap gesture");
                 // Clear existing gestures to avoid duplicates
                 CalendarBorder.GestureRecognizers.Clear();
-                
+
                 // Add new tap gesture - directly call the OnCalendarBorderTapped method
                 var calendarTap = new TapGestureRecognizer();
                 calendarTap.Tapped += OnCalendarBorderTapped;
                 CalendarBorder.GestureRecognizers.Add(calendarTap);
             }
-            
+
             // Find and set up notification border tap gesture
             if (NotificationBorder != null)
             {
                 Console.WriteLine("Setting up notification border tap gesture");
                 // Clear existing gestures to avoid duplicates
                 NotificationBorder.GestureRecognizers.Clear();
-                
+
                 // Add new tap gesture - directly call the OnNotificationBorderTapped method
                 var notificationTap = new TapGestureRecognizer();
                 notificationTap.Tapped += OnNotificationBorderTapped;
                 NotificationBorder.GestureRecognizers.Add(notificationTap);
             }
-            
+
             // Find and set up profile border tap gesture
             if (ProfileBorder != null)
             {
                 Console.WriteLine("Setting up profile border tap gesture");
                 // Clear existing gestures to avoid duplicates
                 ProfileBorder.GestureRecognizers.Clear();
-                
+
                 // Add new tap gesture - directly call the OnProfileTapped method
                 var profileTap = new TapGestureRecognizer();
                 profileTap.Tapped += OnProfileTapped;
@@ -228,28 +228,28 @@ namespace ChronoTrack_ViewLayer.Components
         private void OnProfileTapped(object sender, TappedEventArgs e)
         {
             Console.WriteLine("*** Profile tapped - showing logout menu ***");
-            
+
             try
             {
                 // First close any other popups
                 CloseAllPopups();
-                
+
                 // Show the profile menu popup
                 if (ProfileMenuPopup != null)
                 {
                     // Always show the popup, don't toggle
                     ProfileMenuPopup.IsVisible = true;
-                    
+
                     // Show overlay to allow clicking outside to close
                     if (PopupOverlay != null)
                     {
                         PopupOverlay.IsVisible = true;
                         PopupOverlay.ZIndex = 1999; // Just below the profile menu
                     }
-                    
+
                     // Make sure it's on top
                     ProfileMenuPopup.ZIndex = 2000;
-                    
+
                     Console.WriteLine("Profile menu popup displayed");
                 }
                 else
@@ -271,29 +271,29 @@ namespace ChronoTrack_ViewLayer.Components
             {
                 ProfileMenuPopup.IsVisible = false;
             }
-            
+
             await PerformLogout();
         }
 
         private async Task PerformLogout()
         {
             bool confirm = await Application.Current.MainPage.DisplayAlert(
-                "Logout", 
-                "Are you sure you want to logout?", 
+                "Logout",
+                "Are you sure you want to logout?",
                 "Yes", "No");
-                
+
             if (!confirm)
                 return;
-                
+
             // Clear user preferences/session data
             Preferences.Remove("UserToken");
             Preferences.Remove("UserRole");
             Preferences.Remove("UserName");
             Preferences.Remove("UserEmail");
-            
+
             // Raise event for parent page to handle logout navigation
             LogoutRequested?.Invoke(this, EventArgs.Empty);
-            
+
             // If no parent is handling the event, navigate directly
             try
             {
@@ -305,7 +305,7 @@ namespace ChronoTrack_ViewLayer.Components
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", 
+                await Application.Current.MainPage.DisplayAlert("Error",
                     $"Could not navigate to login page: {ex.Message}", "OK");
             }
         }
@@ -313,31 +313,31 @@ namespace ChronoTrack_ViewLayer.Components
         private void OnCalendarBorderTapped(object sender, TappedEventArgs e)
         {
             Console.WriteLine("*** Calendar border tapped from XAML handler ***");
-            
+
             try
             {
                 // First, close all popups to start fresh
                 CloseAllPopups();
-                
+
                 // Now, show calendar popup
                 if (CalendarPopupComponent != null)
                 {
                     // Show calendar popup
                     CalendarPopupComponent.IsVisible = true;
-                    
+
                     // Refresh calendar
                     CalendarPopupComponent.RefreshCalendar();
-                    
+
                     // Show overlay
                     PopupOverlay.IsVisible = true;
-                    
+
                     // Ensure proper z-index
                     CalendarPopupComponent.ZIndex = 99999;
                     PopupOverlay.ZIndex = 99998;
-                    
+
                     // Force popups to appear above everything else
                     EnsurePopupsAreOnTop();
-                    
+
                     Console.WriteLine("Calendar popup opened successfully");
                 }
                 else
@@ -355,31 +355,31 @@ namespace ChronoTrack_ViewLayer.Components
         private void OnNotificationBorderTapped(object sender, TappedEventArgs e)
         {
             Console.WriteLine("*** Notification border tapped from XAML handler ***");
-            
+
             try
             {
                 // First, close all popups to start fresh
                 CloseAllPopups();
-                
+
                 // Now, show notifications popup
                 if (NotificationsPopupComponent != null)
                 {
                     // Show notifications popup
                     NotificationsPopupComponent.IsVisible = true;
-                    
+
                     // Refresh notifications if needed
                     NotificationsPopupComponent.RefreshNotifications();
-                    
+
                     // Show overlay
                     PopupOverlay.IsVisible = true;
-                    
+
                     // Ensure proper z-index
                     NotificationsPopupComponent.ZIndex = 99999;
                     PopupOverlay.ZIndex = 99998;
-                    
+
                     // Force popups to appear above everything else
                     EnsurePopupsAreOnTop();
-                    
+
                     Console.WriteLine("Notifications popup opened successfully");
                 }
                 else
@@ -393,37 +393,37 @@ namespace ChronoTrack_ViewLayer.Components
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
             }
         }
-        
+
         private void OnPopupOverlayTapped(object sender, TappedEventArgs e)
         {
             CloseAllPopups();
         }
-        
+
         private void CloseAllPopups()
         {
             Console.WriteLine("CloseAllPopups method called");
-            
+
             if (CalendarPopupComponent != null)
             {
                 bool wasVisible = CalendarPopupComponent.IsVisible;
                 CalendarPopupComponent.IsVisible = false;
                 if (wasVisible) Console.WriteLine("Hiding calendar popup");
             }
-            
+
             if (NotificationsPopupComponent != null)
             {
                 bool wasVisible = NotificationsPopupComponent.IsVisible;
                 NotificationsPopupComponent.IsVisible = false;
                 if (wasVisible) Console.WriteLine("Hiding notifications popup");
             }
-            
+
             if (ProfileMenuPopup != null)
             {
                 bool wasVisible = ProfileMenuPopup.IsVisible;
                 ProfileMenuPopup.IsVisible = false;
                 if (wasVisible) Console.WriteLine("Hiding profile menu popup");
             }
-            
+
             if (PopupOverlay != null)
             {
                 bool wasVisible = PopupOverlay.IsVisible;
@@ -453,25 +453,25 @@ namespace ChronoTrack_ViewLayer.Components
                                 RemoveFromCurrentParent(PopupOverlay);
                                 AddViewWithHighZIndex(rootLayout, popupOverlayView, 99998);
                             }
-                            
+
                             if (CalendarPopupComponent.IsVisible && CalendarPopupComponent is View calendarPopupView)
                             {
                                 RemoveFromCurrentParent(CalendarPopupComponent);
                                 AddViewWithHighZIndex(rootLayout, calendarPopupView, 99999);
                             }
-                            
+
                             if (NotificationsPopupComponent.IsVisible && NotificationsPopupComponent is View notificationsPopupView)
                             {
                                 RemoveFromCurrentParent(NotificationsPopupComponent);
                                 AddViewWithHighZIndex(rootLayout, notificationsPopupView, 99999);
                             }
-                            
+
                             Console.WriteLine("Successfully added popups to root layout");
                         }
                         else
                         {
                             Console.WriteLine("Could not find root layout");
-                            
+
                             // Try alternative approach with Shell or ContentPage
                             if (mainWindow.Page is Shell shell && shell.CurrentItem?.CurrentItem != null)
                             {
@@ -500,18 +500,18 @@ namespace ChronoTrack_ViewLayer.Components
         private void UseOverlayApproach()
         {
             Console.WriteLine("Using overlay approach for popups");
-            
+
             // For this approach, we make sure the popups are properly setup in their own container
             // We'll use their current positioning in the AbsoluteLayout but make sure
             // they have the right Z-index properties set
-            
+
             PopupOverlay.ZIndex = 99998;
-            
+
             if (CalendarPopupComponent.IsVisible)
             {
                 CalendarPopupComponent.ZIndex = 99999;
             }
-            
+
             if (NotificationsPopupComponent.IsVisible)
             {
                 NotificationsPopupComponent.ZIndex = 99999;
@@ -532,7 +532,7 @@ namespace ChronoTrack_ViewLayer.Components
                 {
                     page = shell.CurrentPage;
                 }
-                
+
                 // Traverse the visual tree to find a suitable container
                 var visualTree = page.GetVisualTreeDescendants();
                 foreach (var element in visualTree)
@@ -546,7 +546,7 @@ namespace ChronoTrack_ViewLayer.Components
                         return grid;
                     }
                 }
-                
+
                 // Try to get the Content if it's a Layout
                 if (page is ContentPage contentPage && contentPage.Content is Layout layoutContent)
                 {
@@ -557,7 +557,7 @@ namespace ChronoTrack_ViewLayer.Components
             {
                 Console.WriteLine($"Error finding root layout: {ex.Message}");
             }
-            
+
             return null;
         }
 
@@ -578,12 +578,12 @@ namespace ChronoTrack_ViewLayer.Components
                             break;
                         }
                     }
-                    
+
                     if (!alreadyChild)
                     {
                         grid.Children.Add(view);
                     }
-                    
+
                     // Set the Z-index using attached property
                     view.ZIndex = zIndex;
                 }
@@ -598,14 +598,14 @@ namespace ChronoTrack_ViewLayer.Components
                             break;
                         }
                     }
-                    
+
                     if (!alreadyChild)
                     {
                         absoluteLayout.Children.Add(view);
                         AbsoluteLayout.SetLayoutFlags(view, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.All);
                         AbsoluteLayout.SetLayoutBounds(view, new Rect(0, 0, 1, 1));
                     }
-                    
+
                     // Set the Z-index using attached property
                     view.ZIndex = zIndex;
                 }
@@ -616,7 +616,7 @@ namespace ChronoTrack_ViewLayer.Components
                     {
                         stackLayout.Children.Add(view);
                     }
-                    
+
                     // Set the Z-index using attached property
                     view.ZIndex = zIndex;
                 }
@@ -627,7 +627,7 @@ namespace ChronoTrack_ViewLayer.Components
                     {
                         hStackLayout.Children.Add(view);
                     }
-                    
+
                     // Set the Z-index using attached property
                     view.ZIndex = zIndex;
                 }
@@ -644,7 +644,7 @@ namespace ChronoTrack_ViewLayer.Components
             if (PopupOverlay is View popupOverlayView)
             {
                 RemoveFromCurrentParent(PopupOverlay);
-                
+
                 if (layout is Grid grid)
                 {
                     grid.Children.Add(popupOverlayView);
@@ -663,11 +663,11 @@ namespace ChronoTrack_ViewLayer.Components
                     popupOverlayView.ZIndex = 99998;
                 }
             }
-            
+
             if (CalendarPopupComponent.IsVisible && CalendarPopupComponent is View calendarPopupView)
             {
                 RemoveFromCurrentParent(CalendarPopupComponent);
-                
+
                 if (layout is Grid grid)
                 {
                     grid.Children.Add(calendarPopupView);
@@ -687,11 +687,11 @@ namespace ChronoTrack_ViewLayer.Components
                     calendarPopupView.ZIndex = 99999;
                 }
             }
-            
+
             if (NotificationsPopupComponent.IsVisible && NotificationsPopupComponent is View notificationsPopupView)
             {
                 RemoveFromCurrentParent(NotificationsPopupComponent);
-                
+
                 if (layout is Grid grid)
                 {
                     grid.Children.Add(notificationsPopupView);
@@ -718,7 +718,7 @@ namespace ChronoTrack_ViewLayer.Components
         {
             if (element == null || element.Parent == null)
                 return;
-            
+
             try
             {
                 if (element.Parent is Grid parentGrid && element is IView view)
@@ -743,4 +743,4 @@ namespace ChronoTrack_ViewLayer.Components
             }
         }
     }
-} 
+}

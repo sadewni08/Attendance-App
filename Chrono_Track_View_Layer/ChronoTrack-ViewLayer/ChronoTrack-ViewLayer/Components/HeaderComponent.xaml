@@ -165,7 +165,7 @@
         <!-- Popup overlay - for closing popups by clicking outside them -->
         <Grid x:Name="PopupOverlay"
               IsVisible="False"
-              InputTransparent="False"
+              InputTransparent="True"
               BackgroundColor="#80000000"
               AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"
