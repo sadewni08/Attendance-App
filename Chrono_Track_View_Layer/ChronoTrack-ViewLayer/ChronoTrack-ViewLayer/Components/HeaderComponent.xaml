@@ -41,11 +41,13 @@
                                    HeightRequest="20"
                                    WidthRequest="20"
                                    Opacity="0.5"
+                               
                                    SemanticProperties.Description="Search icon"/>
                             <Entry Placeholder="Quick Search..."
                                    Grid.Column="1"
                                    PlaceholderColor="#9CA3AF"
-                                   BackgroundColor="Transparent"/>
+                                   BackgroundColor="Transparent"
+                                   TextColor="Black" />
                         </Grid>
                     </Border>
 
@@ -163,7 +165,7 @@
         <!-- Popup overlay - for closing popups by clicking outside them -->
         <Grid x:Name="PopupOverlay"
               IsVisible="False"
-              InputTransparent="False"
+              InputTransparent="True"
               BackgroundColor="#80000000"
               AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"
