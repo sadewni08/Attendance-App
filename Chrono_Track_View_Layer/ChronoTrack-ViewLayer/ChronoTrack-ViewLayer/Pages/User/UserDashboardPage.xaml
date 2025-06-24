@@ -189,7 +189,7 @@
                                             HeightRequest="50"
                                             WidthRequest="160"
                                             CornerRadius="10"
-                                            Clicked="OnCheckInClicked"
+                                         
                                             Style="{StaticResource ResponsiveButtonStyle}"
                                             x:Name="CheckInButton">
                                         <Button.Shadow>
