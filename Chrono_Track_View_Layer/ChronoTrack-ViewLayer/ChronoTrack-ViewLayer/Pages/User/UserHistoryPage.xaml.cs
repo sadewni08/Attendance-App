@@ -465,7 +465,7 @@ namespace ChronoTrack_ViewLayer.Pages.User
             {
                 // Desktop view - reset to default values
                 _showFullDay = true;
-                AttendanceIdHeader.IsVisible = true;
+                AttendanceIdHeader.IsVisible = false;
                 DateHeader.FontSize = 14;
                 DayHeader.FontSize = 14;
                 CheckInHeader.FontSize = 14;
