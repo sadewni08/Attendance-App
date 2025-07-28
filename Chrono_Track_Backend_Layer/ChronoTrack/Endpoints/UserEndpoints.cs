@@ -162,7 +162,7 @@ namespace ChronoTrack.Endpoints
             {
                 try 
                 {
-                    logger?.LogInformation("Updating employee: {UserId}, {FirstName} {LastName}", 
+                    logger?.LogInformation("Updating employee: {UserId}, {FirstName} , {LastName}", 
                         userId, command.FirstName, command.LastName);
                         
                     // Log contact details being updated
